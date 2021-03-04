@@ -7,7 +7,7 @@ class App extends Component {
     return (
       <div className="App">
         <Navbar dark color="primary">
-          <div className="container">
+          <div className="container"> {/*Creates a containter class in React. We have to use className when specifying a class in React.*/} 
             <NavbarBrand href="/">NuCamp</NavbarBrand>
           </div>
         </Navbar>
@@ -16,4 +16,5 @@ class App extends Component {
   }
 }
 
-export default App;
+export default App; {/*This means that this function App is the default export for this entire file. JavaScript module is a JavaScript file that must contain one export.*/}
+{/*export {App}; can be used if we don't want to type the above line with default */}
