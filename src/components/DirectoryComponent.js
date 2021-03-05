@@ -10,7 +10,7 @@ class Directory extends Component {
                     name: "React Lake Campground",
                     image: "assets/images/images/react-lake.jpg",
                     elevation: 1233,
-                    description: "nestled in the foothills of the Chrome Mountains, this campground on the shores of the pristine React Lake is a favorite for fly fishers."
+                    description: "Nestled in the foothills of the Chrome Mountains, this campground on the shores of the pristine React Lake is a favorite for fly fishers."
                 },
                 {
                     id: 1,
@@ -53,8 +53,28 @@ class Directory extends Component {
                 <div className="row">
                     {directory}
                 </div>
+                <ExampleParentComponent /> 
             </div>
         );
     }
 }
+
+class ExampleParentComponent extends Component {
+    constructor(props) {
+        super(props);
+        this.state= {
+            number:333
+        }
+    }
+    render() {
+        return <ExampleChildComponent number={this.state.number} greeting= "Hello World!"/>
+    }
+}
+
+class ExampleChildComponent extends Component {
+    render() {
+        return <div>{this.props.number} {this.props.greeting}</div> //Passing the number and greeting states from the ExampleParentComponent class.
+    };
+}
+
 export default Directory;
