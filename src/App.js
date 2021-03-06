@@ -21,7 +21,7 @@ class App extends Component {
             <NavbarBrand href="/">NuCamp</NavbarBrand>
           </div>
         </Navbar>
-        <Directory campsite={this.state.campsites}/> //This will create the props to be displayed on the website
+        <Directory campsites={this.state.campsites}/> {/*This will create the props to be displayed on the website*/}
       </div>
     );
   }
