@@ -1,10 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'; //Do this to create a Component for this file.
 import { Navbar, NavbarBrand } from 'reactstrap';
 import Directory from './DirectoryComponent';
 import CampsiteInfo from './CampsiteInfoComponent';
 import { CAMPSITES } from '../shared/campsites'; //The ../ tells the computer to go down one directory, then it will go to the shared folder and then the campsites.js
 
 //This MainComponent.js is a container component that sits below the App.js file.
+/* "This" keyword is used for values that will change based
+from the user's input*/
 class Main extends Component {
     constructor(props) {
         super(props);
