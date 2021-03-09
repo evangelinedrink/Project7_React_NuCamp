@@ -40,13 +40,15 @@ class CampsiteInfo extends Component {
     render() {
         if(this.props.campsite) { //if(campsite) means that there is a campsite parameter. if(campsite)===true because if(campsite) is the same as if(campsite===campsite)
             return(
-                <div className="row">
-                    {this.renderCampsite(this.props.campsite)} {/*Here we are calling the renderCampsite method by using curly braces (because this is an object). Objects use curly braces.
-                    In line 24, it takes information from somewhere else that can change values,
-                    this is why we need "this" keyword. "This" keyword is used for values that will change
-                    from the user's input*/}
+                <div className="container"> {/*This will make the cards that display the campsites centered in the website and not go to the left. */}
+                    <div className="row">
+                        {this.renderCampsite(this.props.campsite)} {/*Here we are calling the renderCampsite method by using curly braces (because this is an object). Objects use curly braces.
+                        In line 24, it takes information from somewhere else that can change values,
+                        this is why we need "this" keyword. "This" keyword is used for values that will change
+                        from the user's input*/}
 
-                    {this.renderComments(this.props.campsite.comments)} {/*This will call the renderComments method to show the comments in the website. We need to have "campsite" before the "comments" because each the commens are a child object of the campsite values.*/}
+                        {this.renderComments(this.props.campsite.comments)} {/*This will call the renderComments method to show the comments in the website. We need to have "campsite" before the "comments" because each the commens are a child object of the campsite values.*/}
+                    </div>
                 </div>
             );
         }
