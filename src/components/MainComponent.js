@@ -1,8 +1,9 @@
 import React, { Component } from 'react'; //Do this to create a Component for this file.
-import { Navbar, NavbarBrand } from 'reactstrap';
 import Directory from './DirectoryComponent';
 import CampsiteInfo from './CampsiteInfoComponent';
 import { CAMPSITES } from '../shared/campsites'; //The ../ tells the computer to go down one directory, then it will go to the shared folder and then the campsites.js
+import Header from "./HeaderComponent";
+import Footer from "./FooterComponent";
 
 //This MainComponent.js is a container component that sits below the App.js file.
 /* "This" keyword is used for values that will change based
@@ -23,15 +24,12 @@ class Main extends Component {
     render() {
         return (
             <div>
-                <Navbar dark color="primary">
-                    <div className="container">
-                        <NavbarBrand href="/">NuCamp</NavbarBrand>
-                    </div>
-                </Navbar>
+                <Header /> {/*Calls the Header component*/}
                 <Directory campsites={this.state.campsites} onClick={campsiteId=> this.onCampsiteSelect(campsiteId)}/>
                 <CampsiteInfo campsite={this.state.campsites.filter(campsite=> campsite.id=== this.state.selectedCampsite)[0]} /> {/*Filter always returns an array, but us. CampsiteInfo component is expecting the computer to return an object, not an array, 
                 which is why we are using an index ([]) to get only one value (one campsite object) from the array to the CampsiteInfo component.*/}
                 {/*This will call the CampsiteInfo component into the DirectoryComponent.js*/}
+                <Footer /> {/*Calls the Footer component*/}
             </div>
         );
     };
