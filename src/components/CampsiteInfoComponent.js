@@ -1,5 +1,6 @@
 import React from "react"; //There are no Component objects in this file, which is why it is not in this line.
-import {Card, CardImg, CardText, CardBody, CardTitle} from "reactstrap";
+import {Card, CardImg, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem} from "reactstrap";
+import {Link} from "react-router-dom";
 
 /*This CampsiteInfoComponent.js file will become a presentational component. It uses props from MainComponent.js.  
 This is the reason why CampsiteInfoComponent.js is a good candidate to have function components.*/
@@ -11,7 +12,6 @@ This is the reason why CampsiteInfoComponent.js is a good candidate to have func
             <Card>
                 <CardImg top src={campsite.image} alt={campsite.name}/>
                 <CardBody>
-                    <CardTitle>{campsite.name}</CardTitle>
                     <CardText>{campsite.description}</CardText>
                 </CardBody>
             </Card>
@@ -43,6 +43,17 @@ function CampsiteInfo(props) {
         if(props.campsite) { //if(campsite) means that there is a campsite parameter. if(campsite)===true because if(campsite) is the same as if(campsite===campsite)
             return(
                 <div className="container"> {/*This will make the cards that display the campsites centered in the website and not go to the left. */}
+                    <div className="row">
+                        <div className="col">
+                            <Breadcrumb>
+                                <BreadcrumbItem><Link to="/directory">Directory</Link></BreadcrumbItem>
+                                <BreadcrumbItem active>{props.campsite.name}</BreadcrumbItem> {/*Add a dynamic text with the {props.campsite.name}*/}
+                            </Breadcrumb>
+                            <h2>{props.campsite.name}</h2> {/*This is for the heading.*/}
+                            <hr />
+                        </div>
+                    </div>
+                    
                     <div className="row">
                         <RenderCampsite campsite={props.campsite}/> {/*This will call the RenderCampsite method. */}
                         <RenderComments comments={props.comments}/> {/*This will call the RenderComments method to show the comments in the website. */}
