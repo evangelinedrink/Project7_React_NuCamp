@@ -2,6 +2,7 @@ import React, {Component} from "react";
 //import Directory from "./components/DirectoryComponent";
 //import {CAMPSITES} from "./shared/campsites";
 import Main from "./components/MainComponent";
+import {BrowserRouter} from "react-router-dom";
 import "./App.css";
 
 
@@ -16,9 +17,11 @@ class App extends Component {
 
   render() {
     return (
+      <BrowserRouter> {/*BrowserRouter makes it the highest level component and it gives it access to the Main component*/}
       <div className="App">
         <Main/> {/*Rendering of the Main component. This makes the visual component of the website placed in the MainComponent*/}
       </div>
+      </BrowserRouter>
     );
   };
 }
