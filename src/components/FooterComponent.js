@@ -1,5 +1,5 @@
 import React from "react";
-import {Link} from "react-router-dom";
+import {Link} from "react-router-dom"; //To use the Link component, you need to import it from react-router-dom
 
 function Footer(props) {
     return(
