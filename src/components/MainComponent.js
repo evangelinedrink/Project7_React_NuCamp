@@ -10,6 +10,7 @@ import {COMMENTS} from "../shared/comments"; /*The ../ tells the Main Component 
 import {PARTNERS} from "../shared/partners"; /*Note that the two dots here used in ../shared mean the same thing as when you use the command cd .. from 
 a command prompt -- to go down one directory (since MainComponent.js is in the components directory and you need to back out of this directory before being able to access the shared directory.*/
 import {PROMOTIONS} from "../shared/promotions";
+import About from "./AboutComponent"; //Accesses the AboutComponent.js file's About method
 import {Switch, Route, Redirect} from "react-router-dom"; //Setups the brains of our router so it knows where to send users when they click on buttons on the website
 
 //This MainComponent.js is a container component that sits below the App.js file.
@@ -63,7 +64,8 @@ class Main extends Component {
                     <Route exact path="/contactus" component={Contact} /> {/*We are not passing a state data to the Contact Component, which is why we can just assign the variable component with the object Contact.
                     Unlike the <Route> for the Directory component, you use the attribute component instead of render above. That is because you do not need to pass any state data into the Contact component. */}
                     <Route path="/directory/:campsiteId" component={CampsiteWithId}/> {/*The colon says waht follows the forward slash is going to be a parameter. It will store it as campsiteId.*/ }
-                    <Redirect to="/home" /> {/*This Redirect component acts as a catch all, sort of like a Default statement in a JavaScript Switch statement.*/}
+                    <Route exact path="/aboutus" render={()=> <About partners={this.state.partners} />} /> {/*If user clicks on the About Us, it will take them to the About Us page. The information in the array PARTNERS will be sent to the AboutComponent.js by using the variable "partners".*/}
+                    <Redirect to="/home" /> { /*This Redirect component acts as a catch all, sort of like a Default statement in a JavaScript Switch statement.*/ }
                 </Switch>
                 <Footer /> {/*Calls/renders the Footer component*/}
                 
