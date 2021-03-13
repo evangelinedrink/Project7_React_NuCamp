@@ -45,7 +45,7 @@ function CampsiteInfo(props) {
                 <div className="container"> {/*This will make the cards that display the campsites centered in the website and not go to the left. */}
                     <div className="row">
                         <RenderCampsite campsite={props.campsite}/> {/*This will call the RenderCampsite method. */}
-                        <RenderComments comments={props.campsite.comments}/> {/*This will call the RenderComments method to show the comments in the website. We need to have "campsite" before the "comments" because each the commens are a child object of the campsite values.*/}
+                        <RenderComments comments={props.comments}/> {/*This will call the RenderComments method to show the comments in the website. */}
                     </div>
                 </div>
             );

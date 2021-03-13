@@ -14,7 +14,7 @@ import {Switch, Route, Redirect} from "react-router-dom"; //Setups the brains of
 
 //This MainComponent.js is a container component that sits below the App.js file.
 /* "This" keyword is used for values that will change based
-from the user's input*/
+on the user's input*/
 class Main extends Component {
     constructor(props) {
         super(props);
@@ -45,6 +45,15 @@ class Main extends Component {
                 );
             };
             
+        const CampsiteWithId= ({match}) => { //This method will select a campsite and include comments for that campsite.
+            return(
+                <CampsiteInfo 
+                    campsite={this.state.campsites.filter(campsite => campsite.id === +match.params.campsiteId)[0]}  /*The + in front of a term that contains a number as a string will remove the string from the number. the [0] will return a string and not an array (what filter method normally returns)*/
+                    comments ={this.state.comments.filter(campsite=> campsite.id=== +match.params.campsiteId)} 
+                    /> 
+            );
+        }
+
         return (
             <div>
                 <Header /> {/*Calls the Header component*/}
@@ -53,6 +62,7 @@ class Main extends Component {
                     <Route exact path="/directory" render={()=> <Directory campsites={this.state.campsites} />} /> {/*The exact path will lead to the Directory Component. Information about the campsites (inside of the this.state.campsites) is given a variable name "campsites" that can be used in the Directory Component.*/}
                     <Route exact path="/contactus" component={Contact} /> {/*We are not passing a state data to the Contact Component, which is why we can just assign the variable component with the object Contact.
                     Unlike the <Route> for the Directory component, you use the attribute component instead of render above. That is because you do not need to pass any state data into the Contact component. */}
+                    <Route path="/directory/:campsiteId" component={CampsiteWithId}/> {/*The colon says waht follows the forward slash is going to be a parameter. It will store it as campsiteId.*/ }
                     <Redirect to="/home" /> {/*This Redirect component acts as a catch all, sort of like a Default statement in a JavaScript Switch statement.*/}
                 </Switch>
                 <Footer /> {/*Calls/renders the Footer component*/}
