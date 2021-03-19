@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Breadcrumb, BreadcrumbItem, Button, Form, FormGroup, Label, Input, Col} from "reactstrap";
+import {Breadcrumb, BreadcrumbItem, Button, Form, FormGroup, Label, Input, Col, FormFeedback} from "reactstrap"; //Client side Form validation (shows error messages) will be provided thanks to FormFeedback
 import {Link} from "react-router-dom";
 
 class Contact extends Component {
@@ -13,7 +13,13 @@ class Contact extends Component {
             email: " ",
             agree: false, //Boolean value to false if the person agrees to be contacted or not.
             contactType: "By Phone", //By phone is set as a default
-            feedback: " "
+            feedback: " ",
+            touched: { //touched ensures that the user has clicked on the fields below in the form
+                firstName: false, //Initially set to false because the user wouldn't have clicked on the fields in the form when they first enter this part of the website
+                lastName: false,
+                phoneNum: false,
+                email: false
+            }
         };
 
         //Bind reference to the "this" keyword so the this.whatever will be binded to the correct value.
@@ -22,6 +28,53 @@ class Contact extends Component {
         this.handleSubmit= this.handleSubmit.bind(this);
     }
 
+    //Form Validation
+    validate(firstName, lastName, phoneNum, email) {
+        const errors= { //Sets up error messages. Empty strings means there are no error messages
+            firstName: " ",
+            lastName: " ",
+            phoneNum: " ",
+            email: " "   
+        };
+
+        if(this.state.touched.firstName) { //if statement checks to see if the firstName field has been clicked on by the user.
+            if(firstName.length<2) { //Checks to see if the length of the firstName input field is less than 2. If true, then there will be an error message (code is in the line below)
+                errors.firstName= "First name must be at least 2 characters.";
+            } else if(firstName.length>15) {
+                errors.firstName= "First name must be 15 or less characters.";
+            }
+        }
+
+        if(this.state.touched.lastName) { //if statement checks to see if the lastName field has been clicked on by the user.
+            if(lastName.length<2) { //Checks to see if the length of the lastName input field is less than 2. If true, then there will be an error message (code is in the line below)
+                errors.lastName= "Last name must be at least 2 characters.";
+            } else if(lastName.length>15) {
+                errors.lastName= "Last name must be 15 or less characters.";
+            }
+        }
+
+        //Validating the phone number
+        const reg=/^\d+$/; //This regex makes sure that the phone number field in the form only contains numbers (signified by the \d+). Regeex specifies a pattern to be matched.  It returns true or false if it matches or not.
+        if(this.state.touched.phoneNum && !reg.test(phoneNum)) {
+            errors.phoneNum= "The phone number should contain only numbers.";
+        }
+
+        //Validating if the email field has been clicked on in the form
+        if(this.state.touched.email && !email.includes("@")) { //If email field was touched (but not typed in) and does not include an @ symbol, then an error message would be displayed.
+            errors.email= "Email should contain an @.";
+        }
+
+        return errors; //Return the errors object.
+
+    }
+
+    //Event handler method, handleBlur. We are passing an argument that is not an "event," we need to wrap the handleBlur inside another function. Arrow function is used to define this method.
+    //If we use an arrow function, we don't need to use the "bind" method to bind the "this" keyword.
+    handleBlur= (field) => () => {
+       this.setState({ //setState to change the "touched" object. 
+           touched: {...this.state.touched, [field]: true} //We only want to change one of the properties, so we use the spread syntax. The [field]: true means that the field was clicked on by the user.
+       }); 
+    }
     //Handles changes in Form Elements
     handleInputChange(event) {
         const target= event.target;
@@ -39,7 +92,10 @@ class Contact extends Component {
         event.preventDefault(); //Normally when you submit a form, it refreshes the entire page. We don't want the page to be refreshed, so we use event.preventDefault();
     }
 
-    render() {
+    render() { //Render displays things inside of it to the web page.
+
+        const errors= this.validate(this.state.firstName, this.state.lastName, this.state.phoneNum, this.state.email); //Variables declared in functions and methods are locally scoped, so the errors variable is not available here. We declare a new variable errors here. Get the values of the errors from the this.state method.
+        //Any time there is a change in the input field, the this.state.name will be re-rendered, so it will always be up to date.
         return (
             <div className="container">
                 <div className="row">
@@ -78,11 +134,14 @@ class Contact extends Component {
                         <Form onSubmit={this.handleSubmit}>
                             <FormGroup row>
                                 <Label htmlFor="firstName" md={2}>First Name</Label>
-                                <Col md={10}> {/*This is equivalent to line 77: <div className="col-md-10">*/ }
+                                <Col md={10}> {/*This is equivalent to line 77: <div className="col-md-10">*/} 
                                     <Input type="text" id="firstName" name="firstName"
                                         placeholder="First Name"
                                         value={this.state.firstName}
+                                        invalid={errors.firstName} //Invalid attribute will be a Boolean attribute.  Is there an error method to this field? If errors.firstName is an empty string, this invalid method would be false. If it is not empty, it will be true.
+                                        onBlur={this.handleBlur("firstName")} /*When a user clicks on a field and leaves it, the computer can see this by using an onBlur event handler.*/
                                         onChange={this.handleInputChange} />
+                                    <FormFeedback>{errors.firstName}</FormFeedback> {/*Shows content of the error message in the input*/}
                                 </Col>
                             </FormGroup>
                             <FormGroup row>
@@ -91,7 +150,10 @@ class Contact extends Component {
                                     <Input type="text" id="lastName" name="lastName"
                                         placeholder="Last Name"
                                         value={this.state.lastName}
+                                        invalid={errors.lastName} //Invalid attribute will be a Boolean attribute.  Is there an error method to this field? If errors.firstName is an empty string, this invalid method would be false. If it is not empty, it will be true.
+                                        onBlur={this.handleBlur("lastName")} /*When a user clicks on a field and leaves it, the computer can see this by using an onBlur event handler.*/
                                         onChange={this.handleInputChange} />
+                                    <FormFeedback>{errors.lastName}</FormFeedback> {/*Shows content of the error message in the input*/}
                                 </Col>                        
                             </FormGroup>
                             <FormGroup row>
@@ -100,7 +162,10 @@ class Contact extends Component {
                                     <Input type="tel" id="phoneNum" name="phoneNum"
                                         placeholder="Phone number"
                                         value={this.state.phoneNum}
+                                        invalid={errors.phoneNum} //Invalid attribute will be a Boolean attribute.  Is there an error method to this field? If errors.firstName is an empty string, this invalid method would be false. If it is not empty, it will be true.
+                                        onBlur={this.handleBlur("phoneNum")} /*When a user clicks on a field and leaves it, the computer can see this by using an onBlur event handler.*/
                                         onChange={this.handleInputChange} />
+                                    <FormFeedback>{errors.phoneNum}</FormFeedback> {/*Shows content of the error message in the input*/}
                                 </Col>
                             </FormGroup>
                             <FormGroup row>
@@ -109,7 +174,10 @@ class Contact extends Component {
                                     <Input type="email" id="email" name="email"
                                         placeholder="Email"
                                         value={this.state.email}
+                                        invalid={errors.email} //Invalid attribute will be a Boolean attribute.  Is there an error method to this field? If errors.firstName is an empty string, this invalid method would be false. If it is not empty, it will be true.
+                                        onBlur={this.handleBlur("email")} /*When a user clicks on a field and leaves it, the computer can see this by using an onBlur event handler.*/
                                         onChange={this.handleInputChange} /> {/*This corresponds to the handleInputChange method above.*/}
+                                    <FormFeedback>{errors.email}</FormFeedback> {/*Shows content of the error message in the input*/}
                                 </Col>
                             </FormGroup>
                             <FormGroup row>
