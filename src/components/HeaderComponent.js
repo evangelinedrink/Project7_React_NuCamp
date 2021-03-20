@@ -1,5 +1,5 @@
 import React, {Component} from "react"; //Import React and Component from the react library
-import {Nav, Navbar, NavbarBrand, NavbarToggler, Collapse, NavItem, Jumbotron} from "reactstrap"; //Import the Navbar, NavbarBrand and Jumbotron from Reactstrap
+import {Nav, Navbar, NavbarBrand, NavbarToggler, Collapse, NavItem, Jumbotron, Button, Modal, ModalHeader, ModalBody, Form, FormGroup, Input, Label} from "reactstrap"; //Import the Navbar, NavbarBrand and Jumbotron from Reactstrap
 import {NavLink} from "react-router-dom";
 class Header extends Component { //Class component doesn't need to have a constructor.
     //To create a responsive NavBar, this component needs to have a constructor section.
@@ -8,8 +8,13 @@ class Header extends Component { //Class component doesn't need to have a constr
 
         this.toggleNav= this.toggleNav.bind(this); //Ensures that when ToggleNav is called, this keyword would refer to this component because of the bind. This is used for Event Handlers.
         this.state = { //this.state is an object
-            isNavOpen: false
+            isNavOpen: false,
+            isModalOpen: false,//Keeps track if the modal is open (true) or closed (false)
         };
+
+        this.toggleNav= this.toggleNav.bind(this); //With an event handler in JSX, you call the method (in this case toggleNav) without using () after the toggleNav method/function.  This is why we have to bind the "this" keyword to toggleNav function.
+        this.toggleModal= this.toggleModal.bind(this); //Ensures that "this" keyword is binded to the correct method (in this case to toggleModal)
+        this.handleLogin= this.handleLogin.bind(this);
     }
 
     /*Method that will handle when the NavbarToggler is clicked*/
@@ -17,6 +22,20 @@ class Header extends Component { //Class component doesn't need to have a constr
         this.setState({
             isNavOpen: !this.state.isNavOpen
         });
+    }
+
+    /*Method that will handle when the Modal is clicked*/
+    toggleModal() {
+        this.setState({
+            isModalOpen: !this.state.isModalOpen //When the Modal is open (clicked on by the user) isModalOpen will be changed to the opposite of false (true), meaning that the Modal is opened.
+        });
+    }
+
+    //handleLogin method- Not building a backend to authenticate this login. It will alert us to the form values (username and password) when it is submitted.
+    handleLogin(event) {
+        alert(`Username: ${this.username.value} Password:${this.password.value} Remember: ${this.remember.checked}`); /*this.username.value was set by using the innerRef attribute in the Input element of the form.*/
+        this.toggleModal(); //Close the Modal with the toggleModal method.
+        event.preventDefault(); //To prevent the entire page from being re-rendered (refreshed) in the web browser.
     }
 
     render() {  //Class component will always need a render method which contains a return.
@@ -67,9 +86,42 @@ class Header extends Component { //Class component doesn't need to have a constr
                                 </NavItem>
 
                             </Nav>
+                            <span className="navbar-text ml-auto"> {/*Add a button in the Navbar*/}
+                                <Button outline onClick={this.toggleModal}> {/*When the button is clicked, the toggleModal method will start running.*/}
+                                    <i className="fa fa-sign-in fa-lg"/> Login
+                                </Button>
+                            </span>
                         </Collapse> 
                     </div>
                 </Navbar>
+
+                <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}> {/*Creating the Modal Component in our Header. 
+                Reactstrap Modal component comes with two attributes, isOpen and toggle. isOpen attribute is false, the modal will be closed and hidden. If isOpen attribute is true
+                the modal will be opened and visible. toggle attribute makes it possible to close the modal when it is opened. */}
+                   <ModalHeader toggle={this.toggleModal}>Login</ModalHeader> 
+                   <ModalBody>
+                        <Form onsubmit={this.handleLogin}>
+                            <FormGroup> {/*Username input*/}
+                                <Label htmlFor="username">Username</Label>
+                                <Input type="text" id="username" name="username" innerRef={input=>this.username=input}/> {/*innerRef attribute will set the input to a variable name. For example the input value here is set as this.username.}
+                            </FormGroup>
+                            
+                            <FormGroup> {/*Password input*/}
+                                <Label htmlFor="password">Password</Label>
+                                <Input type="password" id="password" name="password" innerRef={input=>this.password= input}/>
+                            </FormGroup>
+
+                            <FormGroup check> {/*Checkbox input*/}
+                                <Label check>
+                                    <Input type="checkbox" name="remember" innerRef={input=>this.remember= input}/>
+                                    Remember me
+                                </Label>
+                            </FormGroup>
+
+                            <Button type="submit" value="submit" color="primary">Login</Button> {/*Create the submit button*/}
+                        </Form>
+                   </ModalBody>
+                </Modal>
             </React.Fragment>
         );
     }
