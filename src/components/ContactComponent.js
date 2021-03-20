@@ -135,7 +135,7 @@ class Contact extends Component {
                         <hr />
                     </div>
                     <div className="col-md-10">
-                        <LocalForm onSubmit={values => this.handleSubmit()}> {/*Redux form component is called LocalForm*/}
+                        <LocalForm onSubmit={values => this.handleSubmit(values)}> {/*Redux form component is called LocalForm*/}
                             <Row clasName="form-group"> {/*Using Redux to create the form group*/}
                                 <Label htmlFor="firstName" md={2}>First Name</Label>
                                 <Col md={10}> {/*This is equivalent to line 77: <div className="col-md-10">*/} 
