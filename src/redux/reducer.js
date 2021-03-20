@@ -1,9 +1,10 @@
 //MOVING RESPONSIBILITY FROM THE STATE FROM MAINCOMPONET.JS TO REDUCER.JS
-import {CAMPSITES} from "..shared/campsites"; 
+import {CAMPSITES} from "../shared/campsites"; 
 import {COMMENTS} from "../shared/comments"; //../ means that we are backing out of the Redux folder to the shared folder.
 import {PARTNERS} from "../shared/partners";
 import {PROMOTIONS} from "../shared/promotions";
 
+//Redux store is the single source of truth. This means that all state data is stored in the Redux store. 
 export const initialState={ //This will be the initial state of our app that we will get straight from the source data files. To access this constant from another file, we need to add the word "export" in front of the const. 
     campsites: CAMPSITES,
     comments: COMMENTS,

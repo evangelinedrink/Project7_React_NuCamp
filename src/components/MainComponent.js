@@ -37,7 +37,7 @@ class Main extends Component {
             partners: PARTNERS,
             promotions: PROMOTIONS
         };*/
-    }
+    
 
 //    onCampsiteSelect(campsiteId) { //This method will work whenever a campsite is selected by the user. The campsite object will get passed into this method. this.setState will change the value of the campsite into state. When selected, the campsite description will be given.
 //        this.setState({selectedCampsite: campsiteId}); //Outside of the constructor, you must use this.setState because the object is changing.
@@ -87,7 +87,7 @@ class Main extends Component {
             </div>
         );
     };
-
+}
 
 export default withRouter(connect(mapStateToProps)(Main)); //Setting up the connect() method that will subscribe the components to the store in redux.
 //Main component can now take its state from the redux store.

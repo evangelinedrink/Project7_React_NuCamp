@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
-import {Breadcrumb, BreadcrumbItem, Button, Form, FormGroup, Label, Input, Col, FormFeedback} from "reactstrap"; //Client side Form validation (shows error messages) will be provided thanks to FormFeedback
+import {Breadcrumb, BreadcrumbItem, Button, Label, Input, Col, Row} from "reactstrap"; //Client side Form validation (shows error messages) will be provided thanks to FormFeedback
 import {Link} from "react-router-dom";
+import {Control, LocalForm} from "react-redux-form";
 
+//ContactForm to use the redux store instead of the contact components local state.
 class Contact extends Component {
     constructor(props) {
         super(props);
@@ -23,13 +25,13 @@ class Contact extends Component {
         };
 
         //Bind reference to the "this" keyword so the this.whatever will be binded to the correct value.
-        this.handleInputChange= this.handleInputChange.bind(this);
+        //this.handleInputChange= this.handleInputChange.bind(this);
         //Bind the handleSubmit(event) event handler to the "this" statement, so that "this" keyword would be binded to the correct value inside of handleSubmit method. 
-        this.handleSubmit= this.handleSubmit.bind(this);
+        //this.handleSubmit= this.handleSubmit.bind(this);
     }
 
-    //Form Validation
-    validate(firstName, lastName, phoneNum, email) {
+    //Form Validation for the controlled form that didnt use Redux
+    /*validate(firstName, lastName, phoneNum, email) {
         const errors= { //Sets up error messages. Empty strings means there are no error messages
             firstName: " ",
             lastName: " ",
@@ -66,11 +68,12 @@ class Contact extends Component {
 
         return errors; //Return the errors object.
 
-    }
+    }*/
 
+    //The lines commented below were for the controlled form that did not use Redux.
     //Event handler method, handleBlur. We are passing an argument that is not an "event," we need to wrap the handleBlur inside another function. Arrow function is used to define this method.
     //If we use an arrow function, we don't need to use the "bind" method to bind the "this" keyword.
-    handleBlur= (field) => () => {
+   /* handleBlur= (field) => () => {
        this.setState({ //setState to change the "touched" object. 
            touched: {...this.state.touched, [field]: true} //We only want to change one of the properties, so we use the spread syntax. The [field]: true means that the field was clicked on by the user.
        }); 
@@ -84,17 +87,17 @@ class Contact extends Component {
         this.setState({
             [name]: value
         })
-    }
+    } */
 
-    handleSubmit(event) {
-        console.log("Current state is: " + JSON.stringify(this.state));
-        alert("Current state is: " +JSON.stringify(this.state));
-        event.preventDefault(); //Normally when you submit a form, it refreshes the entire page. We don't want the page to be refreshed, so we use event.preventDefault();
+    handleSubmit(values) {
+        console.log("Current state is: " + JSON.stringify(values));
+        alert("Current state is: " +JSON.stringify(values));
+        //event.preventDefault(); //Normally when you submit a form, it refreshes the entire page. We don't want the page to be refreshed, so we use event.preventDefault(); This was for the controlled form that did not use Redux
     }
 
     render() { //Render displays things inside of it to the web page.
 
-        const errors= this.validate(this.state.firstName, this.state.lastName, this.state.phoneNum, this.state.email); //Variables declared in functions and methods are locally scoped, so the errors variable is not available here. We declare a new variable errors here. Get the values of the errors from the this.state method.
+       //const errors= this.validate(this.state.firstName, this.state.lastName, this.state.phoneNum, this.state.email); //Variables declared in functions and methods are locally scoped, so the errors variable is not available here. We declare a new variable errors here. Get the values of the errors from the this.state method.
         //Any time there is a change in the input field, the this.state.name will be re-rendered, so it will always be up to date.
         return (
             <div className="container">
@@ -131,93 +134,108 @@ class Contact extends Component {
                         <hr />
                     </div>
                     <div className="col-md-10">
-                        <Form onSubmit={this.handleSubmit}>
-                            <FormGroup row>
+                        <LocalForm onSubmit={values => this.handleSubmit()}> {/*Redux form component is called LocalForm*/}
+                            <Row clasName="form-group"> {/*Using Redux to create the form group*/}
                                 <Label htmlFor="firstName" md={2}>First Name</Label>
                                 <Col md={10}> {/*This is equivalent to line 77: <div className="col-md-10">*/} 
-                                    <Input type="text" id="firstName" name="firstName"
+                                    <Control.text model=".firstName" id="firstName" name="firstName" /*Control.text is the React-Redux element for an input element. 
+                                    It says that this is a text box area. For the Control.text we have to add a model attribute. Model attribute tells redux that the value for this field is stored in the state named firstName.*/
                                         placeholder="First Name"
-                                        value={this.state.firstName}
-                                        invalid={errors.firstName} //Invalid attribute will be a Boolean attribute.  Is there an error method to this field? If errors.firstName is an empty string, this invalid method would be false. If it is not empty, it will be true.
-                                        onBlur={this.handleBlur("firstName")} /*When a user clicks on a field and leaves it, the computer can see this by using an onBlur event handler.*/
-                                        onChange={this.handleInputChange} />
-                                    <FormFeedback>{errors.firstName}</FormFeedback> {/*Shows content of the error message in the input*/}
+                                        className="form-control"
+                                        //value={this.state.firstName}
+                                        //invalid={errors.firstName} //Invalid attribute will be a Boolean attribute.  Is there an error method to this field? If errors.firstName is an empty string, this invalid method would be false. If it is not empty, it will be true.
+                                        //onBlur={this.handleBlur("firstName")} /*When a user clicks on a field and leaves it, the computer can see this by using an onBlur event handler.*/
+                                        //onChange={this.handleInputChange} 
+                                    />
+                                    {/*<FormFeedback>{errors.firstName}</FormFeedback> {/*Shows content of the error message in the input*/}
                                 </Col>
-                            </FormGroup>
-                            <FormGroup row>
+                            </Row>
+                            <Row clasName="form-group">
                                 <Label htmlFor="lastName" md={2}>Last Name</Label> {/*Since for is already used for for loops in JavaScript, we have to use htmlFor to let the computer know it is a For element of HTML.*/}
                                 <Col md={10}>
-                                    <Input type="text" id="lastName" name="lastName"
+                                    <Control.text model=".lastName" id="lastName" name="lastName"
                                         placeholder="Last Name"
-                                        value={this.state.lastName}
-                                        invalid={errors.lastName} //Invalid attribute will be a Boolean attribute.  Is there an error method to this field? If errors.firstName is an empty string, this invalid method would be false. If it is not empty, it will be true.
-                                        onBlur={this.handleBlur("lastName")} /*When a user clicks on a field and leaves it, the computer can see this by using an onBlur event handler.*/
-                                        onChange={this.handleInputChange} />
-                                    <FormFeedback>{errors.lastName}</FormFeedback> {/*Shows content of the error message in the input*/}
-                                </Col>                        
-                            </FormGroup>
-                            <FormGroup row>
+                                        className="form-control"
+                                        //value={this.state.lastName}
+                                        //invalid={errors.lastName} //Invalid attribute will be a Boolean attribute.  Is there an error method to this field? If errors.firstName is an empty string, this invalid method would be false. If it is not empty, it will be true.
+                                        //onBlur={this.handleBlur("lastName")} /*When a user clicks on a field and leaves it, the computer can see this by using an onBlur event handler.*/
+                                        //onChange={this.handleInputChange} 
+                                    />
+                                    {/*<FormFeedback>{errors.lastName}</FormFeedback> {/*Shows content of the error message in the input*/}
+                                </Col>  
+                            </Row>                      
+                            <Row clasName="form-group">
                                 <Label htmlFor="phoneNum" md={2}>Phone</Label>
                                 <Col md={10}>
-                                    <Input type="tel" id="phoneNum" name="phoneNum"
+                                    <Control.text model=".phoneNum" id="phoneNum" name="phoneNum" //Value for the model attribute will always be the same for the name, except it has a dot in front of it.
                                         placeholder="Phone number"
-                                        value={this.state.phoneNum}
-                                        invalid={errors.phoneNum} //Invalid attribute will be a Boolean attribute.  Is there an error method to this field? If errors.firstName is an empty string, this invalid method would be false. If it is not empty, it will be true.
-                                        onBlur={this.handleBlur("phoneNum")} /*When a user clicks on a field and leaves it, the computer can see this by using an onBlur event handler.*/
-                                        onChange={this.handleInputChange} />
-                                    <FormFeedback>{errors.phoneNum}</FormFeedback> {/*Shows content of the error message in the input*/}
+                                        className="form-control"
+                                        //value={this.state.phoneNum}
+                                        //invalid={errors.phoneNum} //Invalid attribute will be a Boolean attribute.  Is there an error method to this field? If errors.firstName is an empty string, this invalid method would be false. If it is not empty, it will be true.
+                                        //onBlur={this.handleBlur("phoneNum")} /*When a user clicks on a field and leaves it, the computer can see this by using an onBlur event handler.*/
+                                        //onChange={this.handleInputChange} 
+                                    />
+                                    {/*<FormFeedback>{errors.phoneNum}</FormFeedback> {/*Shows content of the error message in the input*/}
                                 </Col>
-                            </FormGroup>
-                            <FormGroup row>
+                            </Row>
+                            <Row clasName="form-group">
                                 <Label htmlFor="email" md={2}>Email</Label>
                                 <Col md={10}>
-                                    <Input type="email" id="email" name="email"
+                                    <Control.text model=".email" id="email" name="email"
                                         placeholder="Email"
-                                        value={this.state.email}
-                                        invalid={errors.email} //Invalid attribute will be a Boolean attribute.  Is there an error method to this field? If errors.firstName is an empty string, this invalid method would be false. If it is not empty, it will be true.
-                                        onBlur={this.handleBlur("email")} /*When a user clicks on a field and leaves it, the computer can see this by using an onBlur event handler.*/
-                                        onChange={this.handleInputChange} /> {/*This corresponds to the handleInputChange method above.*/}
-                                    <FormFeedback>{errors.email}</FormFeedback> {/*Shows content of the error message in the input*/}
+                                        className="form-control"
+                                        //value={this.state.email}
+                                        //invalid={errors.email} //Invalid attribute will be a Boolean attribute.  Is there an error method to this field? If errors.firstName is an empty string, this invalid method would be false. If it is not empty, it will be true.
+                                        //onBlur={this.handleBlur("email")} /*When a user clicks on a field and leaves it, the computer can see this by using an onBlur event handler.*/
+                                        //onChange={this.handleInputChange} /*This corresponds to the handleInputChange method above.*/
+                                    /> 
+                                    {/*<FormFeedback>{errors.email}</FormFeedback> {/*Shows content of the error message in the input*/}
                                 </Col>
-                            </FormGroup>
-                            <FormGroup row>
+                            </Row>
+                            <Row clasName="form-group">
                                 <Col md={{size: 4, offset: 2}}> {/*This line means: <div class="col-md-4 offset-md-2>*/}
-                                    <FormGroup check>
+                                    <div className="form-check">
                                         <Label check>
-                                            <Input type="checkbox"
+                                            <Control.checkbox /*This creates a checkbox input.*/
+                                                model=".agree"
                                                 name="agree"
-                                                checked={this.state.agree}
-                                                onChange={this.handleInputChange} /> {' '}
+                                                className="form-check-input"//className for checked box control
+                                                //checked={this.state.agree}
+                                                //onChange={this.handleInputChange} 
+                                            /> {' '}
                                             <strong>May we contact you?</strong>
                                         </Label>
-                                    </FormGroup>
+                                    </div>
                                 </Col>
                                 <Col md={4}>
-                                    <Input type="select" name="contactType"
-                                            value={this.state.contactType}
-                                            onChange={this.handleInputChange}>
+                                    <Control.select model="contactType" name="contactType" /*Select input.*/
+                                            className="form-control">
+                                            {/*value={this.state.contactType}*/}
+                                            {/*onChange={this.handleInputChange}>*/}
                                         <option>By Phone</option>
                                         <option>By Email</option>
-                                    </Input>
+                                    </Control.select>
                                 </Col>
-                            </FormGroup>
-                            <FormGroup row>
+                            </Row>
+                            <Row clasName="form-group">
                                 <Label htmlFor="feedback" md={2}>Your Feedback</Label>
                                 <Col md={10}>
-                                    <Input type="textarea" id="feedback" name="feedback"
+                                    <Control.textarea model=".feedback" id="feedback" name="feedback"
                                         rows="12"
-                                        value={this.state.feedback}
-                                        onChange={this.handleInputChange}></Input>
+                                        className="form-control"
+                                        //value={this.state.feedback}
+                                        //onChange={this.handleInputChange}>
+                                    />
                                 </Col>
-                            </FormGroup>
-                            <FormGroup row>
+                            </Row>
+                            <Row clasName="form-group">
                                 <Col md={{size: 10, offset: 2}}> {/*This line means: <div class="col-md-10 offset-md-2"*/}
                                     <Button type="submit" color="primary">
                                         Send Feedback
                                     </Button>
                                 </Col>
-                            </FormGroup>
-                        </Form>
+                            </Row>
+                        </LocalForm>
                     </div>
                 </div>
             </div>
