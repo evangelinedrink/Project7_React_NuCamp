@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import {Breadcrumb, BreadcrumbItem, Button, Label, Input, Col, Row} from "reactstrap"; //Client side Form validation (shows error messages) will be provided thanks to FormFeedback
 import {Link} from "react-router-dom";
-import {Control, LocalForm} from "react-redux-form";
+import {Control, LocalForm, Errors} from "react-redux-form";
 
+const required= val => val //All form inputs are received as strings. We are verifying that there is a value (input)
 //ContactForm to use the redux store instead of the contact components local state.
 class Contact extends Component {
     constructor(props) {

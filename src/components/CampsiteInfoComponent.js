@@ -1,10 +1,21 @@
-import React from "react"; //There are no Component objects in this file, which is why it is not in this line.
-import {Card, CardImg, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem} from "reactstrap";
+import React, {Component} from "react"; //Import React and Component from the react library
+//import React from "react"; //There are no Component objects in this file, which is why it is not in this line.
+import {Card, CardImg, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem, Button, Modal, ModalHeader, ModalBody, ModalFooter} from "reactstrap";
 import {Link} from "react-router-dom";
 
 /*This CampsiteInfoComponent.js file will become a presentational component. It uses props from MainComponent.js.  
 This is the reason why CampsiteInfoComponent.js is a good candidate to have function components.*/
 
+class CommentForm extends Component{
+    render() {
+        return(
+            <div>
+                <Button outline><i className="fa fa-pencil fa-lg"/>Submit Comment</Button>
+                <Modal></Modal>
+            </div>
+        );
+    }
+}
     
  function RenderCampsite({campsite}) { //Using object destructuring syntax in the props section of the function
         return(
@@ -57,6 +68,7 @@ function CampsiteInfo(props) {
                     <div className="row">
                         <RenderCampsite campsite={props.campsite}/> {/*This will call the RenderCampsite method. */}
                         <RenderComments comments={props.comments}/> {/*This will call the RenderComments method to show the comments in the website. */}
+                        <CommentForm/> {/*Render (show on the website) the information in the CommentForm method*/}
                     </div>
                 </div>
             );
