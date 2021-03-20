@@ -2,10 +2,20 @@ import React, { Component } from "react"; //Import React and Component from the 
 //import React from "react"; //There are no Component objects in this file, which is why it is not in this line.
 import { Card, CardImg, CardText, CardBody, Breadcrumb, BreadcrumbItem, Button, Modal, ModalHeader, ModalBody, Label } from "reactstrap";
 import { Link } from "react-router-dom";
-import { Control, LocalForm } from "react-redux-form";
+import { Control, LocalForm, Errors } from "react-redux-form";
 
 /*This CampsiteInfoComponent.js file will become a presentational component. It uses props from MainComponent.js.  
 This is the reason why CampsiteInfoComponent.js is a good candidate to have function components.*/
+
+const required= val => val && val.length; //Required function. All form inputs are received as strings. We are verifying that there is a value (input)
+//Above statement makes sure that there is a value (val) that was written and that the value (val) has a length. If nothing is written, there will be an error function (because val.lenght will be false).
+
+//Validating inputs inserted in the comments form.
+const maxLength= len => val => !val || (val.length<=len); /*Requires to wrap a function inside of a function.  First function takes the maximum length. The second function takes the value (input string)
+Inside of the inner function we want to return true if the maxLength has not been succeeded.
+!val will return true if there is no value, or if the val.length is less than or equal to len (this function will return true).
+If both of these conditions are false, then the maxLength test will fail.*/
+const minLength= len => val => val && (val.length>=len); //Wraps a function in a function. Inner function will return true if there is an input (value)
 
 class CommentForm extends Component {
     constructor(props) {
@@ -43,7 +53,7 @@ class CommentForm extends Component {
 
                             <div className="form-group">
                                 <Label htmlFor="rating">Rating</Label> {/*Rating section of form*/}
-                                <Control.select model=".rating" id="rating" name="rating"> {/*Gives Options for the user to select the rating for the campsite*/}
+                                <Control.select model=".rating" id="rating" name="rating" className="form-control"> {/*Gives Options for the user to select the rating for the campsite*/}
                                     <option value="5">5</option>
                                     <option value="4">4</option>
                                     <option value="3">3</option>
@@ -54,12 +64,31 @@ class CommentForm extends Component {
 
                             <div className="form-group">
                                 <Label htmlFor="author">Author</Label> {/*Author section of form*/}
-                                <Control.text model=".author" id="author" name="author" placeholder="Your Name" />
+                                <Control.text model=".author" id="author" name="author" placeholder="Your Name" 
+                                className="form-control" 
+                                validators={{ //Makes sure that the min length of what is typed is 2 and the max length is 15
+                                    required, 
+                                    minLength: minLength(2),
+                                    maxLength: maxLength(15),
+                                }}
+                                />
+
+                                <Errors
+                                        className="text-danger" //Makes the text red
+                                        model=".author"
+                                        show="touched" //shows error message if the field has been clicked by the user
+                                        component="div"
+                                        messages={{ //Messages that will show for certain situations that return false.
+                                            required: "Required", //Message that will show if the required field returns false
+                                            minLength: "Must be at least 2 characters.",
+                                            maxLength: "Must be 15 characters or less."
+                                        }}
+                                />
                             </div>
 
                             <div className="form-group">
                                 {/*Comment area of form*/}
-                                <Control.textarea model=".text" id="text" name="text" placeholder="Write your comment here."/>
+                                <Control.textarea model=".text" id="text" name="text" placeholder="Write your comment here." className="form-control"/>
                             </div>
 
                             <Button type="submit" color="primary">Submit Comment</Button> {/*For a submit button, make sure it is a type="submit" button. That way the data will then be sent.*/}

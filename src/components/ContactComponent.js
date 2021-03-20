@@ -3,7 +3,19 @@ import {Breadcrumb, BreadcrumbItem, Button, Label, Input, Col, Row} from "reacts
 import {Link} from "react-router-dom";
 import {Control, LocalForm, Errors} from "react-redux-form";
 
-const required= val => val //All form inputs are received as strings. We are verifying that there is a value (input)
+const required= val => val && val.length; //Required function. All form inputs are received as strings. We are verifying that there is a value (input)
+//Above statement makes sure that there is a value (val) that was written and that the value (val) has a length. If nothing is written, there will be an error function (because val.lenght will be false).
+
+/*Requires to wrap a function inside of a function.  First function takes the maximum length. The second function takes the value (input string)
+Inside of the inner function we want to return true if the maxLength has not been succeeded.
+!val will return true if there is no value, or if the val.length is less than or equal to len (this function will return true).
+If both of these conditions are false, then the maxLength test will fail.*/
+const maxLength= len => val=> !val || (val.length<=len); 
+const minLength= len => val=> val && (val.length >= len); //Wraps a function in a function. Inner function will return true if there is an input (value)
+const isNumber=val=> !isNaN(+val) /*Checks to see if the value is a number. If val is a number, unary plus operator will return the string of a number into a number. 
+Check to see if val is not a number by using !isNaN. If val is not a valid number, it will return false. If val is a valid number, it will return true.*/
+const validEmail= val => /^[A-Z0-9._%+=]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(val); //Verifies if the email entered is a valid email address. test will test that whatever value is passed 
+
 //ContactForm to use the redux store instead of the contact components local state.
 class Contact extends Component {
     constructor(props) {
@@ -143,10 +155,26 @@ class Contact extends Component {
                                     It says that this is a text box area. For the Control.text we have to add a model attribute. Model attribute tells redux that the value for this field is stored in the state named firstName.*/
                                         placeholder="First Name"
                                         className="form-control"
+                                        validators={{ //Makes sure that the min length of what is typed is 2 and the max length is 15
+                                            required, 
+                                            minLength: minLength(2),
+                                            maxLength: maxLength(15)
+                                        }}
                                         //value={this.state.firstName}
                                         //invalid={errors.firstName} //Invalid attribute will be a Boolean attribute.  Is there an error method to this field? If errors.firstName is an empty string, this invalid method would be false. If it is not empty, it will be true.
                                         //onBlur={this.handleBlur("firstName")} /*When a user clicks on a field and leaves it, the computer can see this by using an onBlur event handler.*/
                                         //onChange={this.handleInputChange} 
+                                    />
+                                    <Errors
+                                        className="text-danger" //Makes the text red
+                                        model=".firstName"
+                                        show="touched" //shows error message if the field has been clicked by the user
+                                        component="div"
+                                        messages={{ //Messages that will show for certain situations that return false.
+                                            required: "Required", //Message that will show if the required field returns false
+                                            minLength: "Must be at least 2 characters.",
+                                            maxLength: "Must be 15 characters or less."
+                                        }}
                                     />
                                     {/*<FormFeedback>{errors.firstName}</FormFeedback> {/*Shows content of the error message in the input*/}
                                 </Col>
@@ -157,12 +185,28 @@ class Contact extends Component {
                                     <Control.text model=".lastName" id="lastName" name="lastName"
                                         placeholder="Last Name"
                                         className="form-control"
+                                        validators={{ //Makes sure that the min length of what is typed is 2 and the max length is 15
+                                            required, 
+                                            minLength: minLength(2),
+                                            maxLength: maxLength(15)
+                                        }}
                                         //value={this.state.lastName}
                                         //invalid={errors.lastName} //Invalid attribute will be a Boolean attribute.  Is there an error method to this field? If errors.firstName is an empty string, this invalid method would be false. If it is not empty, it will be true.
                                         //onBlur={this.handleBlur("lastName")} /*When a user clicks on a field and leaves it, the computer can see this by using an onBlur event handler.*/
                                         //onChange={this.handleInputChange} 
                                     />
                                     {/*<FormFeedback>{errors.lastName}</FormFeedback> {/*Shows content of the error message in the input*/}
+                                    <Errors
+                                        className="text-danger" //Makes the text red
+                                        model=".lastName"
+                                        show="touched" //shows error message if the field has been clicked by the user
+                                        component="div"
+                                        messages={{ //Messages that will show for certain situations that return false.
+                                            required: "Required", //Message that will show if the required field returns false
+                                            minLength: "Must be at least 2 characters.",
+                                            maxLength: "Must be 15 characters or less."
+                                        }}
+                                    />
                                 </Col>  
                             </Row>                      
                             <Row clasName="form-group">
@@ -171,12 +215,30 @@ class Contact extends Component {
                                     <Control.text model=".phoneNum" id="phoneNum" name="phoneNum" //Value for the model attribute will always be the same for the name, except it has a dot in front of it.
                                         placeholder="Phone number"
                                         className="form-control"
+                                        validators={{ //Makes sure that the min length of what is typed is 10 and the max length is 15
+                                            required, 
+                                            minLength: minLength(10),
+                                            maxLength: maxLength(15),
+                                            isNumber
+                                        }}
                                         //value={this.state.phoneNum}
                                         //invalid={errors.phoneNum} //Invalid attribute will be a Boolean attribute.  Is there an error method to this field? If errors.firstName is an empty string, this invalid method would be false. If it is not empty, it will be true.
                                         //onBlur={this.handleBlur("phoneNum")} /*When a user clicks on a field and leaves it, the computer can see this by using an onBlur event handler.*/
                                         //onChange={this.handleInputChange} 
                                     />
                                     {/*<FormFeedback>{errors.phoneNum}</FormFeedback> {/*Shows content of the error message in the input*/}
+                                    <Errors
+                                        className="text-danger" //Makes the text red
+                                        model=".phoneNum"
+                                        show="touched" //shows error message if the field has been clicked by the user
+                                        component="div"
+                                        messages={{ //Messages that will show for certain situations that return false.
+                                            required: "Required", //Message that will show if the required field returns false
+                                            minLength: "Must be at least 10 numbers.",
+                                            maxLength: "Must be 15 numbers or less.",
+                                            isNumber: "Must be a number."
+                                        }}
+                                    />
                                 </Col>
                             </Row>
                             <Row clasName="form-group">
@@ -185,12 +247,26 @@ class Contact extends Component {
                                     <Control.text model=".email" id="email" name="email"
                                         placeholder="Email"
                                         className="form-control"
+                                        validators={{ //Makes sure that the min length of what is typed is 2 and the max length is 15
+                                            required, 
+                                            validEmail
+                                        }}
                                         //value={this.state.email}
                                         //invalid={errors.email} //Invalid attribute will be a Boolean attribute.  Is there an error method to this field? If errors.firstName is an empty string, this invalid method would be false. If it is not empty, it will be true.
                                         //onBlur={this.handleBlur("email")} /*When a user clicks on a field and leaves it, the computer can see this by using an onBlur event handler.*/
                                         //onChange={this.handleInputChange} /*This corresponds to the handleInputChange method above.*/
                                     /> 
                                     {/*<FormFeedback>{errors.email}</FormFeedback> {/*Shows content of the error message in the input*/}
+                                    <Errors
+                                        className="text-danger" //Makes the text red
+                                        model=".email"
+                                        show="touched" //shows error message if the field has been clicked by the user
+                                        component="div"
+                                        messages={{ //Messages that will show for certain situations that return false.
+                                            required: "Required", //Message that will show if the required field returns false
+                                            validEmail: "Invalid email address"
+                                        }}
+                                    />
                                 </Col>
                             </Row>
                             <Row clasName="form-group">
