@@ -1,3 +1,5 @@
+//No longer need this reducer.js file when combining the reducers. This is only used when you only need one reducer.
+
 //MOVING RESPONSIBILITY FROM THE STATE FROM MAINCOMPONET.JS TO REDUCER.JS
 import {CAMPSITES} from "../shared/campsites"; 
 import {COMMENTS} from "../shared/comments"; //../ means that we are backing out of the Redux folder to the shared folder.
