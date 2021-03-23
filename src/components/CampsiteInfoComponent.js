@@ -36,8 +36,9 @@ class CommentForm extends Component {
 
     handleSubmit(values) {
         this.toggleModal();
-        console.log("Current state is: " + JSON.stringify(values));
-        alert("Current state is: " +JSON.stringify(values));
+        this.props.addComment(this.props.campsiteId, values.rating, values.author, values.text); //When form is submitted, the addComment action creator will create an action using the values from this form. Then the action will go to the reducer, which will then update the state. The comment that the user wrote will now appear in the form. 
+        //console.log("Current state is: " + JSON.stringify(values));
+        //alert("Current state is: " +JSON.stringify(values));
     }
 
     render() {
@@ -113,7 +114,7 @@ function RenderCampsite({ campsite }) { //Using object destructuring syntax in t
     );
 }
 
-function RenderComments({ comments }) {
+function RenderComments({ comments, addComment, campsiteId }) { //addComment, campsiteId, comments are going in as props
     if (comments) { //This will check to see if the comments are not null or undefined. if(comments) checks this because a null or undefined value would be falsy.
         return (
             <div className="col-md-5 m-1">
@@ -127,7 +128,7 @@ function RenderComments({ comments }) {
                         </div>);
                 }
             )} 
-                <CommentForm /> {/*Render (show on the website) the information in the CommentForm method*/}
+                <CommentForm campsiteId={campsiteId} addComment={addComment}/> {/*Render (show on the website) the information in the CommentForm method. campsiteId and addComment are being passed in the CommentForm component as children components.*/}
             </div>
         );
     }
@@ -151,7 +152,9 @@ function CampsiteInfo(props) {
 
                 <div className="row">
                     <RenderCampsite campsite={props.campsite} /> {/*This will call the RenderCampsite method. */}
-                    <RenderComments comments={props.comments} /> {/*This will call the RenderComments method to show the comments in the website. */}
+                    <RenderComments comments={props.comments} /*This will call the RenderComments method to show the comments in the website. */
+                    addComment={props.addComment}
+                    campsiteId={props.campsite.id} /> 
                 </div>
             </div>
         );

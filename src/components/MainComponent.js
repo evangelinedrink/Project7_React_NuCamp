@@ -13,6 +13,7 @@ import Contact from "./ContactComponent";
 import About from "./AboutComponent"; //Accesses the AboutComponent.js file's About method
 import {Switch, Route, Redirect, withRouter} from "react-router-dom"; //Setups the brains of our router so it knows where to send users when they click on buttons on the website
 import {connect} from "react-redux"; 
+import {addComment} from "../redux/ActionCreators";
 
 const mapStateToProps= state => { //We will get the state from redux by creating this mapStateToProps function. It will take the state as an argument and return the following arrays (campsites, comments, partners, promotions) as props. 
     return{
@@ -22,6 +23,11 @@ const mapStateToProps= state => { //We will get the state from redux by creating
        promotions: state.promotions 
     }
 }
+
+//Setting up mapDispatchToProps. It is recommended to set it up as an object. You can also set it up as a function.
+const mapDispatchToProps= {
+    addComment: (campsiteId, rating, author, text) => (addComment(campsiteId, rating, author, text)) /*Value is the arrow function with properties and then the body of the function is calling the action creator "addComment()". */
+};
 
 //This MainComponent.js is a container component that sits below the App.js file.
 /* "This" keyword is used for values that will change based
@@ -62,6 +68,7 @@ class Main extends Component {
                 <CampsiteInfo 
                     campsite={this.props.campsites.filter(campsite => campsite.id === +match.params.campsiteId)[0]}  /*The + in front of a term that contains a number as a string will remove the string from the number. the [0] will return a string and not an array (what filter method normally returns)*/
                     comments ={this.props.comments.filter(campsite=> campsite.id=== +match.params.campsiteId)} 
+                    addComment={this.props.addComment}
                     /> 
             );
         }
@@ -89,6 +96,7 @@ class Main extends Component {
     };
 }
 
-export default withRouter(connect(mapStateToProps)(Main)); //Setting up the connect() method that will subscribe the components to the store in redux.
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Main)); //Setting up the connect() method that will subscribe the components to the store in redux.
 //Main component can now take its state from the redux store.
 //withRouter will work with our changes to our export in this file. withRouter accesses the object's properties.
+//mapDispatchToProps can now be accessed.
