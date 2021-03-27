@@ -1,10 +1,12 @@
 import {createStore, combineReducers, applyMiddleware } from "redux"; //We will be combining our 4 reducers
+import {createForms} from "react-redux-form"; //createForms is a helper function that makes it easier to set up the reducer to update the state whenever new form values are submitted
 import thunk from "redux-thunk";
 import logger from "redux-logger";
 import {Campsites} from "./campsites"; //Only need ./ because this file is in the same folder as the the campsites.js file.
 import {Comments} from "./comments";
 import {Partners} from "./partners";
 import {Promotions} from "./promotions";
+import {InitialFeedback} from "./forms";
 //import {Reducer, initialState} from "./reducer"; //In the same folder as reducer.js, so we only need ./ Don't need this when combining reducers.
 
 export const ConfigureStore= () => { 
@@ -14,6 +16,9 @@ export const ConfigureStore= () => {
             comments: Comments,
             partners: Partners,
             promotions: Promotions,
+            ...createForms({
+                feedbackForm: InitialFeedback,
+            }),
         }),
 
         applyMiddleware(thunk, logger)

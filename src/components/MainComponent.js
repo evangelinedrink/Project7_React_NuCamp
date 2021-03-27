@@ -13,6 +13,7 @@ import Contact from "./ContactComponent";
 import About from "./AboutComponent"; //Accesses the AboutComponent.js file's About method
 import {Switch, Route, Redirect, withRouter} from "react-router-dom"; //Setups the brains of our router so it knows where to send users when they click on buttons on the website
 import {connect} from "react-redux"; 
+import {actions} from "react-redux-form";
 import {addComment, fetchCampsites} from "../redux/ActionCreators";
 
 const mapStateToProps= state => { //We will get the state from redux by creating this mapStateToProps function. It will take the state as an argument and return the following arrays (campsites, comments, partners, promotions) as props. 
@@ -27,7 +28,8 @@ const mapStateToProps= state => { //We will get the state from redux by creating
 //Setting up mapDispatchToProps. It is recommended to set it up as an object. You can also set it up as a function.
 const mapDispatchToProps= {
     addComment: (campsiteId, rating, author, text) => (addComment(campsiteId, rating, author, text)), /*Value is the arrow function with properties and then the body of the function is calling the action creator "addComment()". */
-    fetchCampsites: () => (fetchCampsites())
+    fetchCampsites: () => (fetchCampsites()),
+    resetFeedbackForm: () => (actions.reset("feedbackForm"))
 };
 
 //This MainComponent.js is a container component that sits below the App.js file.
@@ -93,7 +95,8 @@ render() {
                     <Route exact path="/contactus" component={Contact} /> {/*We are not passing a state data to the Contact Component, which is why we can just assign the variable component with the object Contact.
                     Unlike the <Route> for the Directory component, you use the attribute component instead of render above. That is because you do not need to pass any state data into the Contact component. */}
                     <Route path="/directory/:campsiteId" component={CampsiteWithId}/> {/*The colon says waht follows the forward slash is going to be a parameter. It will store it as campsiteId.*/ }
-                    <Route exact path="/aboutus" render={()=> <About partners={this.props.partners} />} /> {/*If user clicks on the About Us, it will take them to the About Us page. The information in the array PARTNERS will be sent to the AboutComponent.js by using the variable "partners".*/}
+                    <Route exact path="/contactus" render={ ()=> <Contact resetFeedbackForm={this.props.resetFeedbackForm}/>} /> {/*Since we are passing a prop to contact, we will use render instead of component */}
+                    {/*<Route exact path="/aboutus" render={()=> <About partners={this.props.partners} />} /> {/*If user clicks on the About Us, it will take them to the About Us page. The information in the array PARTNERS will be sent to the AboutComponent.js by using the variable "partners".*/}
                     <Redirect to="/home" /> { /*This Redirect component acts as a catch all, sort of like a Default statement in a JavaScript Switch statement.*/ }
                 </Switch>
                 <Footer /> {/*Calls/renders the Footer component*/}

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Breadcrumb, BreadcrumbItem, Button, Label, Input, Col, Row} from "reactstrap"; //Client side Form validation (shows error messages) will be provided thanks to FormFeedback
 import {Link} from "react-router-dom";
-import {Control, LocalForm, Errors} from "react-redux-form";
+import {Control, Form, Errors, actions} from "react-redux-form";
 
 const required= val => val && val.length; //Required function. All form inputs are received as strings. We are verifying that there is a value (input)
 //Above statement makes sure that there is a value (val) that was written and that the value (val) has a length. If nothing is written, there will be an error function (because val.lenght will be false).
@@ -105,6 +105,7 @@ class Contact extends Component {
     handleSubmit(values) {
         console.log("Current state is: " + JSON.stringify(values));
         alert("Current state is: " +JSON.stringify(values));
+        this.props.resetFeedbackForm(); //When form is submitted the form values are reset to the initial values.
         //event.preventDefault(); //Normally when you submit a form, it refreshes the entire page. We don't want the page to be refreshed, so we use event.preventDefault(); This was for the controlled form that did not use Redux
     }
 
@@ -147,7 +148,7 @@ class Contact extends Component {
                         <hr />
                     </div>
                     <div className="col-md-10">
-                        <LocalForm onSubmit={values => this.handleSubmit(values)}> {/*Redux form component is called LocalForm*/}
+                        <Form model="feedbackForm" onSubmit={values => this.handleSubmit(values)}> {/*Redux form component is called LocalForm*/}
                             <Row clasName="form-group"> {/*Using Redux to create the form group*/}
                                 <Label htmlFor="firstName" md={2}>First Name</Label>
                                 <Col md={10}> {/*This is equivalent to line 77: <div className="col-md-10">*/} 
@@ -312,7 +313,7 @@ class Contact extends Component {
                                     </Button>
                                 </Col>
                             </Row>
-                        </LocalForm>
+                        </Form>
                     </div>
                 </div>
             </div>
