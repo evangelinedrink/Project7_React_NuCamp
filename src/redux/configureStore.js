@@ -1,4 +1,6 @@
-import {createStore, combineReducers } from "redux"; //We will be combining our 4 reducers
+import {createStore, combineReducers, applyMiddleware } from "redux"; //We will be combining our 4 reducers
+import thunk from "redux-thunk";
+import logger from "redux-logger";
 import {Campsites} from "./campsites"; //Only need ./ because this file is in the same folder as the the campsites.js file.
 import {Comments} from "./comments";
 import {Partners} from "./partners";
@@ -12,7 +14,9 @@ export const ConfigureStore= () => {
             comments: Comments,
             partners: Partners,
             promotions: Promotions,
-        })
+        }),
+
+        applyMiddleware(thunk, logger)
         //Reducer, //Pass in the Reducer and initialState function from reducer.js <- Don't need this when combining reducers
         //initialState <- Don't need this when combining reducers
     );

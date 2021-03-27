@@ -3,6 +3,7 @@ import React, { Component } from "react"; //Import React and Component from the 
 import { Card, CardImg, CardText, CardBody, Breadcrumb, BreadcrumbItem, Button, Modal, ModalHeader, ModalBody, Label } from "reactstrap";
 import { Link } from "react-router-dom";
 import { Control, LocalForm, Errors } from "react-redux-form";
+import {Loading} from "./LoadingComponent";
 
 /*This CampsiteInfoComponent.js file will become a presentational component. It uses props from MainComponent.js.  
 This is the reason why CampsiteInfoComponent.js is a good candidate to have function components.*/
@@ -136,6 +137,27 @@ function RenderComments({ comments, addComment, campsiteId }) { //addComment, ca
 }
 
 function CampsiteInfo(props) {
+    if (props.isLoading) {
+        return(
+            <div className="container">
+                <div className="row">
+                    <Loading/>
+                </div>
+            </div>
+        );
+    }
+    if(props.errMess) {
+        return(
+            <div className="container">
+                <div className="row">
+                    <div className="col">
+                        <h4>{props.errMess}</h4>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+    
     if (props.campsite) { //if(campsite) means that there is a campsite parameter. if(campsite)===true because if(campsite) is the same as if(campsite===campsite)
         return (
             <div className="container"> {/*This will make the cards that display the campsites centered in the website and not go to the left. */}

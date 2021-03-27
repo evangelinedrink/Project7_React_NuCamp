@@ -1,12 +1,17 @@
 import React from "react";
 import {Card, CardImg, CardText, CardBody, CardTitle} from "reactstrap";
+import {Loading} from "./LoadingComponent";
 
 function Home(props) {
     return(
         <div className="container">
             <div className="row">
                 <div className="col-md m-1"> {/*Col-md each will take up a 1/3 of the row. For viewports smaller than medium, each element will take up the entire row and stack on each other. m-1 is minimum margin spacing.*/}
-                    <RenderCard item={props.campsite}/> {/*Provides the variable item to the RenderCard method, where the item will have information about the campsite.*/}
+                    <RenderCard 
+                        item={props.campsite} /*Provides the variable item to the RenderCard method, where the item will have information about the campsite.*/
+                        isLoading={props.campsitesLoading}
+                        errMess={props.campsitesErrMess}
+                    /> 
                 </div>
 
                 <div className="col-md m-1">
@@ -22,7 +27,14 @@ function Home(props) {
     );
 }
 
-function RenderCard({item}) { //This sets up the card that will be used to display the featured campsite, promotion and partner
+function RenderCard({item, isLoading, errMess}) { //This sets up the card that will be used to display the featured campsite, promotion and partner
+    if(isLoading) {
+        return <Loading />;    
+    }
+    if(errMess) {
+        return <h4>{errMess}</h4>;
+    }
+
     return (
         <Card>
             <CardImg src={item.image} alt={item.name} />

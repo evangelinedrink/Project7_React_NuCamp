@@ -13,7 +13,7 @@ import Contact from "./ContactComponent";
 import About from "./AboutComponent"; //Accesses the AboutComponent.js file's About method
 import {Switch, Route, Redirect, withRouter} from "react-router-dom"; //Setups the brains of our router so it knows where to send users when they click on buttons on the website
 import {connect} from "react-redux"; 
-import {addComment} from "../redux/ActionCreators";
+import {addComment, fetchCampsites} from "../redux/ActionCreators";
 
 const mapStateToProps= state => { //We will get the state from redux by creating this mapStateToProps function. It will take the state as an argument and return the following arrays (campsites, comments, partners, promotions) as props. 
     return{
@@ -26,7 +26,8 @@ const mapStateToProps= state => { //We will get the state from redux by creating
 
 //Setting up mapDispatchToProps. It is recommended to set it up as an object. You can also set it up as a function.
 const mapDispatchToProps= {
-    addComment: (campsiteId, rating, author, text) => (addComment(campsiteId, rating, author, text)) /*Value is the arrow function with properties and then the body of the function is calling the action creator "addComment()". */
+    addComment: (campsiteId, rating, author, text) => (addComment(campsiteId, rating, author, text)), /*Value is the arrow function with properties and then the body of the function is calling the action creator "addComment()". */
+    fetchCampsites: () => (fetchCampsites())
 };
 
 //This MainComponent.js is a container component that sits below the App.js file.
@@ -49,14 +50,22 @@ class Main extends Component {
 //        this.setState({selectedCampsite: campsiteId}); //Outside of the constructor, you must use this.setState because the object is changing.
 //    }
 
-    render() {
+//componentDidMount() is a Lifecycle Method. Lifecycle means there are certain points when it (every React component) gets created, updated or removed from the DOM.
+//componentDidMount() is called right after a React component is created and enters into the DOM
+componentDidMount() {
+    this.props.fetchCampsites();
+}
+    
+render() {
         const HomePage= () => { //Arrow functions inherit the "this" of their parent scope.  This is why we are using it here because we want "this" objects from the above lines. Locally Scope Component: only accessible in this file, MainComponent
             return (
                 <Home //All of the objects that are assigned variables in this element (campsite, promotion, partner) will be passed to the HomeComponent.js file.
                     //Displaying Featured campsites, promotions and partners in the Home page
                     /*The filter array methold is used to filter for objects where the featured property evaluates as true.*/
                     /*Since the filter array method returns an array and we want to pass an object, use [0] to access the first and only object in the array.*/
-                    campsite={this.props.campsites.filter(campsite=> campsite.featured)[0]} /*This will display the featured campsite in the Home page*/
+                    campsite={this.props.campsites.campsites.filter(campsite=> campsite.featured)[0]} /*This will display the featured campsite in the Home page. There are two "campsites" because we are getting a campsite array from an object that is also named campsites.*/
+                    campsitesLoading={this.props.campsites.isLoading}
+                    campsitesErrMess={this.props.campsites.errMess}
                     promotion={this.props.promotions.filter(promotion=> promotion.featured)[0]} 
                     partner={this.props.partners.filter(partner=> partner.featured)[0]} 
                 />
@@ -66,8 +75,10 @@ class Main extends Component {
         const CampsiteWithId= ({match}) => { //This method will select a campsite and include comments for that campsite.
             return(
                 <CampsiteInfo 
-                    campsite={this.props.campsites.filter(campsite => campsite.id === +match.params.campsiteId)[0]}  /*The + in front of a term that contains a number as a string will remove the string from the number. the [0] will return a string and not an array (what filter method normally returns)*/
-                    comments ={this.props.comments.filter(campsite=> campsite.id=== +match.params.campsiteId)} 
+                    campsite={this.props.campsites.campsites.filter(campsite => campsite.id === +match.params.campsiteId)[0]}  /*The + in front of a term that contains a number as a string will remove the string from the number. the [0] will return a string and not an array (what filter method normally returns)*/
+                    isLoading={this.props.campsites.isLoading}
+                    errMess={this.props.campsites.errMess}
+                    comments ={this.props.comments.filter(comment=> comment.campsiteId=== +match.params.campsiteId)} 
                     addComment={this.props.addComment}
                     /> 
             );
