@@ -14,7 +14,7 @@ import About from "./AboutComponent"; //Accesses the AboutComponent.js file's Ab
 import {Switch, Route, Redirect, withRouter} from "react-router-dom"; //Setups the brains of our router so it knows where to send users when they click on buttons on the website
 import {connect} from "react-redux"; 
 import {actions} from "react-redux-form";
-import {addComment, fetchCampsites} from "../redux/ActionCreators";
+import {postComment, fetchComments, fetchCampsites, fetchPromotions} from "../redux/ActionCreators";
 
 const mapStateToProps= state => { //We will get the state from redux by creating this mapStateToProps function. It will take the state as an argument and return the following arrays (campsites, comments, partners, promotions) as props. 
     return{
@@ -27,9 +27,11 @@ const mapStateToProps= state => { //We will get the state from redux by creating
 
 //Setting up mapDispatchToProps. It is recommended to set it up as an object. You can also set it up as a function.
 const mapDispatchToProps= {
-    addComment: (campsiteId, rating, author, text) => (addComment(campsiteId, rating, author, text)), /*Value is the arrow function with properties and then the body of the function is calling the action creator "addComment()". */
+    postComment: (campsiteId, rating, author, text) => (postComment(campsiteId, rating, author, text)), /*Value is the arrow function with properties and then the body of the function is calling the action creator "addComment()". */
     fetchCampsites: () => (fetchCampsites()),
-    resetFeedbackForm: () => (actions.reset("feedbackForm"))
+    resetFeedbackForm: () => (actions.reset("feedbackForm")),
+    fetchComments: () => (fetchComments()),
+    fetchPromotions: ()=> (fetchPromotions()),
 };
 
 //This MainComponent.js is a container component that sits below the App.js file.
@@ -56,6 +58,8 @@ class Main extends Component {
 //componentDidMount() is called right after a React component is created and enters into the DOM
 componentDidMount() {
     this.props.fetchCampsites();
+    this.props.fetchComments();//Add the action creators
+    this.props.fetchPromotions();
 }
     
 render() {
@@ -68,7 +72,9 @@ render() {
                     campsite={this.props.campsites.campsites.filter(campsite=> campsite.featured)[0]} /*This will display the featured campsite in the Home page. There are two "campsites" because we are getting a campsite array from an object that is also named campsites.*/
                     campsitesLoading={this.props.campsites.isLoading}
                     campsitesErrMess={this.props.campsites.errMess}
-                    promotion={this.props.promotions.filter(promotion=> promotion.featured)[0]} 
+                    promotion={this.props.promotions.promotions.filter(promotion=> promotion.featured)[0]} //First promotions is the object and the second promotions points to the array inside of the object.
+                    promotionLoading={this.props.promotions.isLoading}
+                    promotionErrMess={this.props.promotions.errMess}
                     partner={this.props.partners.filter(partner=> partner.featured)[0]} 
                 />
                 );
@@ -80,8 +86,9 @@ render() {
                     campsite={this.props.campsites.campsites.filter(campsite => campsite.id === +match.params.campsiteId)[0]}  /*The + in front of a term that contains a number as a string will remove the string from the number. the [0] will return a string and not an array (what filter method normally returns)*/
                     isLoading={this.props.campsites.isLoading}
                     errMess={this.props.campsites.errMess}
-                    comments ={this.props.comments.filter(comment=> comment.campsiteId=== +match.params.campsiteId)} 
-                    addComment={this.props.addComment}
+                    comments ={this.props.comments.comments.filter(comment=> comment.campsiteId=== +match.params.campsiteId)} 
+                    commentsErrMess={this.props.comments.errMess}
+                    postComment={this.props.postComment}
                     /> 
             );
         }
@@ -96,7 +103,7 @@ render() {
                     Unlike the <Route> for the Directory component, you use the attribute component instead of render above. That is because you do not need to pass any state data into the Contact component. */}
                     <Route path="/directory/:campsiteId" component={CampsiteWithId}/> {/*The colon says waht follows the forward slash is going to be a parameter. It will store it as campsiteId.*/ }
                     <Route exact path="/contactus" render={ ()=> <Contact resetFeedbackForm={this.props.resetFeedbackForm}/>} /> {/*Since we are passing a prop to contact, we will use render instead of component */}
-                    {/*<Route exact path="/aboutus" render={()=> <About partners={this.props.partners} />} /> {/*If user clicks on the About Us, it will take them to the About Us page. The information in the array PARTNERS will be sent to the AboutComponent.js by using the variable "partners".*/}
+                    <Route exact path="/aboutus" render={()=> <About partners={this.props.partners} />} /> {/*If user clicks on the About Us, it will take them to the About Us page. The information in the array PARTNERS will be sent to the AboutComponent.js by using the variable "partners".*/}
                     <Redirect to="/home" /> { /*This Redirect component acts as a catch all, sort of like a Default statement in a JavaScript Switch statement.*/ }
                 </Switch>
                 <Footer /> {/*Calls/renders the Footer component*/}

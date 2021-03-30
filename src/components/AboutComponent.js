@@ -14,10 +14,10 @@ function RenderPartner({partner}) {
             </Media>
         </React.Fragment>
           );
-    } else {
-        return <div /> /*Returns an empty div if partner is falsy.*/
-    };   
-}
+    } 
+        return <div />; /*Returns an empty div if partner is falsy.*/
+    }  
+
 
 function About(props) {
 

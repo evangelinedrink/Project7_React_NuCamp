@@ -11,14 +11,14 @@ import {InitialFeedback} from "./forms";
 
 export const ConfigureStore= () => { 
     const store= createStore(
-        combineReducers({ /*Pass as objects all of our reducers that we created (partners.js, comments.js, campsites.js, and promotions.js)*/
+        combineReducers({ /*Pass as objects all of our reducers that we created (partners.js, comments.js, campsites.js, forms.js, and promotions.js)*/
             campsites: Campsites,
             comments: Comments,
             partners: Partners,
             promotions: Promotions,
             ...createForms({
                 feedbackForm: InitialFeedback,
-            }),
+            })
         }),
 
         applyMiddleware(thunk, logger)
@@ -26,4 +26,4 @@ export const ConfigureStore= () => {
         //initialState <- Don't need this when combining reducers
     );
     return store; //Function will return the store variable
-}
+};

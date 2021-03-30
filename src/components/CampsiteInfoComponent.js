@@ -4,6 +4,7 @@ import { Card, CardImg, CardText, CardBody, Breadcrumb, BreadcrumbItem, Button, 
 import { Link } from "react-router-dom";
 import { Control, LocalForm, Errors } from "react-redux-form";
 import {Loading} from "./LoadingComponent";
+import {baseUrl} from "../shared/baseUrl";
 
 /*This CampsiteInfoComponent.js file will become a presentational component. It uses props from MainComponent.js.  
 This is the reason why CampsiteInfoComponent.js is a good candidate to have function components.*/
@@ -23,7 +24,7 @@ class CommentForm extends Component {
         super(props);
         this.state = {
             isModalOpen: false, //Keeps track if the modal is open (true) or closed (false)
-        }
+        };
         this.toggleModal = this.toggleModal.bind(this); //Ensures that "this" keyword is binded to the correct method (in this case to toggleModal)
         this.handleSubmit= this.handleSubmit.bind(this);
     }
@@ -37,7 +38,7 @@ class CommentForm extends Component {
 
     handleSubmit(values) {
         this.toggleModal();
-        this.props.addComment(this.props.campsiteId, values.rating, values.author, values.text); //When form is submitted, the addComment action creator will create an action using the values from this form. Then the action will go to the reducer, which will then update the state. The comment that the user wrote will now appear in the form. 
+        this.props.postComment(this.props.campsiteId, values.rating, values.author, values.text); //When form is submitted, the addComment action creator will create an action using the values from this form. Then the action will go to the reducer, which will then update the state. The comment that the user wrote will now appear in the form. 
         //console.log("Current state is: " + JSON.stringify(values));
         //alert("Current state is: " +JSON.stringify(values));
     }
@@ -68,8 +69,8 @@ class CommentForm extends Component {
                                 <Label htmlFor="author">Author</Label> {/*Author section of form*/}
                                 <Control.text model=".author" id="author" name="author" placeholder="Your Name" 
                                 className="form-control" 
-                                validators={{ //Makes sure that the min length of what is typed is 2 and the max length is 15
-                                    required, 
+                                validators={{ //Makes sure that the min length of what is typed is 2 and the max length is 15 
+                                    required,
                                     minLength: minLength(2),
                                     maxLength: maxLength(15),
                                 }}
@@ -90,6 +91,7 @@ class CommentForm extends Component {
 
                             <div className="form-group">
                                 {/*Comment area of form*/}
+                                <Label htmlFor="text">Comment</Label>
                                 <Control.textarea model=".text" id="text" name="text" placeholder="Write your comment here." className="form-control"/>
                             </div>
 
@@ -106,7 +108,7 @@ function RenderCampsite({ campsite }) { //Using object destructuring syntax in t
     return (
         <div className="col-md-5 m-1">
             <Card>
-                <CardImg top src={campsite.image} alt={campsite.name} />
+                <CardImg top src={baseUrl + campsite.image} alt={campsite.name} />
                 <CardBody>
                     <CardText>{campsite.description}</CardText>
                 </CardBody>
@@ -115,7 +117,7 @@ function RenderCampsite({ campsite }) { //Using object destructuring syntax in t
     );
 }
 
-function RenderComments({ comments, addComment, campsiteId }) { //addComment, campsiteId, comments are going in as props
+function RenderComments({ comments, postComment, campsiteId }) { //addComment, campsiteId, comments are going in as props
     if (comments) { //This will check to see if the comments are not null or undefined. if(comments) checks this because a null or undefined value would be falsy.
         return (
             <div className="col-md-5 m-1">
@@ -129,7 +131,7 @@ function RenderComments({ comments, addComment, campsiteId }) { //addComment, ca
                         </div>);
                 }
             )} 
-                <CommentForm campsiteId={campsiteId} addComment={addComment}/> {/*Render (show on the website) the information in the CommentForm method. campsiteId and addComment are being passed in the CommentForm component as children components.*/}
+                <CommentForm campsiteId={campsiteId} postComment={postComment}/> {/*Render (show on the website) the information in the CommentForm method. campsiteId and addComment are being passed in the CommentForm component as children components.*/}
             </div>
         );
     }
@@ -176,16 +178,14 @@ function CampsiteInfo(props) {
                 <div className="row">
                     <RenderCampsite campsite={props.campsite} /> {/*This will call the RenderCampsite method. */}
                     <RenderComments comments={props.comments} /*This will call the RenderComments method to show the comments in the website. */
-                    addComment={props.addComment}
+                    postComment={props.postComment}
                     campsiteId={props.campsite.id} /> 
                 </div>
             </div>
         );
     }
 
-    return (
-        <div />
-    );
+    return (<div />);
 }
 
 
