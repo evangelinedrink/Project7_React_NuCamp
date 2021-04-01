@@ -10,6 +10,7 @@ All reducers take 2 parameters (previous state/current state which is state=CAMP
             return {...state, errMess: action.payload};
         case ActionTypes.ADD_COMMENT:    
             const comment= action.payload; //Action.payload is an object
+            //We don't need lines 14-15 because json server adds the comment id for us.
             //comment.id= state.comments.length; //The state is in the comments area
             //comment.date= new Date().toISOString();
             return {...state, comments: state.comments.concat(comment)}; //Concat method is an array method that lets us attach a new content to an array by creating a new array, it doesn't change the original array.

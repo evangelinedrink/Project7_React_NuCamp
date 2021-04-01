@@ -47,3 +47,26 @@ h2 {
 .navbar-dark {
   background-color: #301CAD;
 }
+
+/*The properties below are CSS properties, not specific to React.*/
+/*Page-enter and page-enter-active classes describes a transition when you mount a component*/
+.page-enter{
+  opacity: 0;
+  transform: translateX(-100%); /*Moves on the x axis (from left to the right)*/
+}
+
+.page-enter-active{ /*This will give us a fade effect*/
+  opacity: 1;
+  transform: translateX(0%); /*Normal posiiton at 0%*/
+  transition: 300ms ease-out; /*ease-out will start the transition quickly and then it will slowly move. Use ease-out for something that is coming in*/
+}
+
+/*Classes of Page-exit and page-exit-active describes a transition when the page is being unmounted*/
+.page-exit{
+  opacity: 1;
+}
+
+.page-exit-active{
+  opacity: 0;
+  transition: 300ms ease-in; /*use ease-in for something that is going out*/
+}

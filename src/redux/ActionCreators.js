@@ -52,7 +52,7 @@ export const addCampsites= campsites => ({
 });
 
 export const fetchComments= () => dispatch => {
-    return fetch(baseUrl + "comments")
+    return fetch(baseUrl + "comments") //Get data from the server using "fetch"
     .then(response => { //response.ok will be set to true
         if(response.ok){
             return response;
@@ -97,26 +97,26 @@ export const addComments = comments => ({
     payload: comments
 });
 
-export const addComment = comment => ({
+export const addComment = comment => ({ //Updating local Redux store
     type: ActionTypes.ADD_COMMENT,
     payload: comment
 });
 
-export const postComment = (campsiteId, rating, author, text) => dispatch => {
-    
-    const newComment = {
+export const postComment = (campsiteId, rating, author, text) => dispatch => { //This will handle the asynchronous call to fetch and actually have the comment post to the server.
+    //This postComment method is using Redux Thunk where there is a function inside of a function.
+    const newComment = { //Object 
         campsiteId: campsiteId,
         rating: rating,
         author: author,
         text: text
     };
-    newComment.date = new Date().toISOString();
+    newComment.date = new Date().toISOString(); //Sets the date for the new comment (gets the data from the computer when the comment was posted)
     
     return fetch(baseUrl + "comments", {
-        method: "POST",
-        body: JSON.stringify(newComment),
-        headers: {
-            "Content-Type": "application/json",
+        method: "POST", //Method (request method) "POST" that tells fetch to post a comment into the website. The default request method for fetch is "GET"
+        body: JSON.stringify(newComment), //JSON.strigify will get the comment and make it a string
+        headers: { //headers property needs to be an object so you can have multiple headers
+            "Content-Type": "application/json", //Application knows to make the application a json data file.
         }})
         .then(response => {
                 if (response.ok) {
@@ -129,9 +129,9 @@ export const postComment = (campsiteId, rating, author, text) => dispatch => {
             },
             error => { throw error; }
         )
-        .then(response => response.json())
-        .then(response => dispatch(addComment(response)))
-        .catch(error => {
+        .then(response => response.json()) //If the POST request method is successful (line116), the json server will send back the data that you sent. It will give a unique id to the data sent back to the user. 
+        .then(response => dispatch(addComment(response))) //Redux store will also be updated with the new comment
+        .catch(error => { //Error message will be displayed if the POST request method is not successful
             console.log("post comment", error.message);
             alert("Your comment could not be posted\nError: " + error.message);
         });

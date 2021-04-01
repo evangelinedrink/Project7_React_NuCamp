@@ -15,6 +15,7 @@ import {Switch, Route, Redirect, withRouter} from "react-router-dom"; //Setups t
 import {connect} from "react-redux"; 
 import {actions} from "react-redux-form";
 import {postComment, fetchComments, fetchCampsites, fetchPromotions} from "../redux/ActionCreators";
+import {TransitionGroup, CSSTransition} from "react-transition-group";
 
 const mapStateToProps= state => { //We will get the state from redux by creating this mapStateToProps function. It will take the state as an argument and return the following arrays (campsites, comments, partners, promotions) as props. 
     return{
@@ -96,16 +97,20 @@ render() {
         return (
             <div>
                 <Header /> {/*Calls the Header component*/}
-                <Switch> {/*This Switch component is like a Switch Statement in JavaScript. The Route components represent Case in the Switch statement. The Redirect component acts as a Default statement in a JavaScript Switch statement.*/}
-                    <Route path= "/home" component={HomePage} /> {/*Route any traffic to the Home page if the path "home" is selected.*/}
-                    <Route exact path="/directory" render={()=> <Directory campsites={this.props.campsites} />} /> {/*The exact path will lead to the Directory Component. Information about the campsites (inside of the this.state.campsites) is given a variable name "campsites" that can be used in the Directory Component.*/}
-                    <Route exact path="/contactus" component={Contact} /> {/*We are not passing a state data to the Contact Component, which is why we can just assign the variable component with the object Contact.
-                    Unlike the <Route> for the Directory component, you use the attribute component instead of render above. That is because you do not need to pass any state data into the Contact component. */}
-                    <Route path="/directory/:campsiteId" component={CampsiteWithId}/> {/*The colon says waht follows the forward slash is going to be a parameter. It will store it as campsiteId.*/ }
-                    <Route exact path="/contactus" render={ ()=> <Contact resetFeedbackForm={this.props.resetFeedbackForm}/>} /> {/*Since we are passing a prop to contact, we will use render instead of component */}
-                    <Route exact path="/aboutus" render={()=> <About partners={this.props.partners} />} /> {/*If user clicks on the About Us, it will take them to the About Us page. The information in the array PARTNERS will be sent to the AboutComponent.js by using the variable "partners".*/}
-                    <Redirect to="/home" /> { /*This Redirect component acts as a catch all, sort of like a Default statement in a JavaScript Switch statement.*/ }
-                </Switch>
+                    <TransitionGroup> {/*This helps us have transitions for a group of components.*/}
+                        <CSSTransition key={this.props.location.key} classNames="page" timeout={300}> {/*CSSTransition component requires a unique key. React router assigns each Route a unique key, so we are going to use the React Key. classNames is a special attribute that goes with CSSTransition.*/}
+                            <Switch> {/*This Switch component is like a Switch Statement in JavaScript. The Route components represent Case in the Switch statement. The Redirect component acts as a Default statement in a JavaScript Switch statement. the classNames "page" will access your .page components in CSS*/}
+                                <Route path= "/home" component={HomePage} /> {/*Route any traffic to the Home page if the path "home" is selected.*/}
+                                <Route exact path="/directory" render={()=> <Directory campsites={this.props.campsites} />} /> {/*The exact path will lead to the Directory Component. Information about the campsites (inside of the this.state.campsites) is given a variable name "campsites" that can be used in the Directory Component.*/}
+                                <Route exact path="/contactus" component={Contact} /> {/*We are not passing a state data to the Contact Component, which is why we can just assign the variable component with the object Contact.
+                                Unlike the <Route> for the Directory component, you use the attribute component instead of render above. That is because you do not need to pass any state data into the Contact component. */}
+                                <Route path="/directory/:campsiteId" component={CampsiteWithId}/> {/*The colon says waht follows the forward slash is going to be a parameter. It will store it as campsiteId.*/ }
+                                <Route exact path="/contactus" render={ ()=> <Contact resetFeedbackForm={this.props.resetFeedbackForm}/>} /> {/*Since we are passing a prop to contact, we will use render instead of component */}
+                                <Route exact path="/aboutus" render={()=> <About partners={this.props.partners} />} /> {/*If user clicks on the About Us, it will take them to the About Us page. The information in the array PARTNERS will be sent to the AboutComponent.js by using the variable "partners".*/}
+                                <Redirect to="/home" /> { /*This Redirect component acts as a catch all, sort of like a Default statement in a JavaScript Switch statement.*/ }
+                            </Switch>
+                        </CSSTransition>
+                    </TransitionGroup>
                 <Footer /> {/*Calls/renders the Footer component*/}
                 
                 {/*<CampsiteInfo campsite={this.state.campsites.filter(campsite=> campsite.id=== this.state.selectedCampsite)[0]} /> {/*Filter always returns an array, but us. CampsiteInfo component is expecting the computer to return an object, not an array, 
