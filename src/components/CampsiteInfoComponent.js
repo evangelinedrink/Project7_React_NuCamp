@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { Control, LocalForm, Errors } from "react-redux-form";
 import {Loading} from "./LoadingComponent";
 import {baseUrl} from "../shared/baseUrl";
+import {FadeTransform, Fade, Stagger} from "react-animation-components";
 
 /*This CampsiteInfoComponent.js file will become a presentational component. It uses props from MainComponent.js.  
 This is the reason why CampsiteInfoComponent.js is a good candidate to have function components.*/
@@ -107,12 +108,14 @@ class CommentForm extends Component {
 function RenderCampsite({ campsite }) { //Using object destructuring syntax in the props section of the function
     return (
         <div className="col-md-5 m-1">
-            <Card>
-                <CardImg top src={baseUrl + campsite.image} alt={campsite.name} />
-                <CardBody>
-                    <CardText>{campsite.description}</CardText>
-                </CardBody>
-            </Card>
+            <FadeTransform in transformProps={{exitTransform:"scale(0.5) translateY(-50%)"}}>
+                <Card>
+                    <CardImg top src={baseUrl + campsite.image} alt={campsite.name} />
+                    <CardBody>
+                        <CardText>{campsite.description}</CardText>
+                    </CardBody>
+                </Card>
+            </FadeTransform>
         </div>
     );
 }
@@ -122,15 +125,19 @@ function RenderComments({ comments, postComment, campsiteId }) { //addComment, c
         return (
             <div className="col-md-5 m-1">
                 <h4>Comments</h4>
+                <Stagger in>
                   {comments.map(comment => {
                     return ( //This will ensure that the values posted below will show in the webpage.
-                        <div key={comment.id}>
-                            <p>{comment.text}</p>
-                            <p>{comment.author}</p>
-                            <p>{new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(Date.parse(comment.date)))}</p> {/*This will format the date correctly. */}
-                        </div>);
-                }
-            )} 
+                        <Fade in key={comment.id}>
+                            <div>
+                                <p>{comment.text}</p>
+                                <p>{comment.author}</p>
+                                <p>{new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(Date.parse(comment.date)))}</p> {/*This will format the date correctly. */}
+                            </div>)
+                        </Fade>
+                    );
+                    })} 
+            </Stagger>
                 <CommentForm campsiteId={campsiteId} postComment={postComment}/> {/*Render (show on the website) the information in the CommentForm method. campsiteId and addComment are being passed in the CommentForm component as children components.*/}
             </div>
         );
