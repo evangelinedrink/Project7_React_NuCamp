@@ -14,8 +14,9 @@ import About from "./AboutComponent"; //Accesses the AboutComponent.js file's Ab
 import {Switch, Route, Redirect, withRouter} from "react-router-dom"; //Setups the brains of our router so it knows where to send users when they click on buttons on the website
 import {connect} from "react-redux"; 
 import {actions} from "react-redux-form";
-import {postComment, fetchComments, fetchCampsites, fetchPromotions} from "../redux/ActionCreators";
+import {postComment, fetchComments, fetchCampsites, fetchPromotions, fetchPartners, postFeedback} from "../redux/ActionCreators";
 import {TransitionGroup, CSSTransition} from "react-transition-group";
+
 
 const mapStateToProps= state => { //We will get the state from redux by creating this mapStateToProps function. It will take the state as an argument and return the following arrays (campsites, comments, partners, promotions) as props. 
     return{
@@ -33,6 +34,8 @@ const mapDispatchToProps= {
     resetFeedbackForm: () => (actions.reset("feedbackForm")),
     fetchComments: () => (fetchComments()),
     fetchPromotions: ()=> (fetchPromotions()),
+    fetchPartners: ()=> (fetchPartners()),
+    postFeedback: ()=> (postFeedback()),
 };
 
 //This MainComponent.js is a container component that sits below the App.js file.
@@ -61,6 +64,7 @@ componentDidMount() {
     this.props.fetchCampsites();
     this.props.fetchComments();//Add the action creators
     this.props.fetchPromotions();
+    this.props.fetchPartners();
 }
     
 render() {
@@ -76,7 +80,9 @@ render() {
                     promotion={this.props.promotions.promotions.filter(promotion=> promotion.featured)[0]} //First promotions is the object and the second promotions points to the array inside of the object.
                     promotionLoading={this.props.promotions.isLoading}
                     promotionErrMess={this.props.promotions.errMess}
-                    partner={this.props.partners.filter(partner=> partner.featured)[0]} 
+                    partner={this.props.partners.filter(partner=> partner.featured)[0]}  /*This will display one of the partners in the Home Page*/
+                    partnerLoading={this.props.partners.isLoading}
+                    partnerErrMess={this.props.partners.errMess}
                 />
                 );
             };
@@ -105,7 +111,7 @@ render() {
                                 <Route exact path="/contactus" component={Contact} /> {/*We are not passing a state data to the Contact Component, which is why we can just assign the variable component with the object Contact.
                                 Unlike the <Route> for the Directory component, you use the attribute component instead of render above. That is because you do not need to pass any state data into the Contact component. */}
                                 <Route path="/directory/:campsiteId" component={CampsiteWithId}/> {/*The colon says waht follows the forward slash is going to be a parameter. It will store it as campsiteId.*/ }
-                                <Route exact path="/contactus" render={ ()=> <Contact resetFeedbackForm={this.props.resetFeedbackForm}/>} /> {/*Since we are passing a prop to contact, we will use render instead of component */}
+                                <Route exact path="/contactus" render={ ()=> <Contact resetFeedbackForm={this.props.resetFeedbackForm} postFeedback={this.props.postFeedback}/>} /> {/*Since we are passing a prop to contact, we will use render instead of component */}
                                 <Route exact path="/aboutus" render={()=> <About partners={this.props.partners} />} /> {/*If user clicks on the About Us, it will take them to the About Us page. The information in the array PARTNERS will be sent to the AboutComponent.js by using the variable "partners".*/}
                                 <Redirect to="/home" /> { /*This Redirect component acts as a catch all, sort of like a Default statement in a JavaScript Switch statement.*/ }
                             </Switch>

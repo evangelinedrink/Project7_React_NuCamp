@@ -176,3 +176,73 @@ export const addPromotions= promotions => ({
     type: ActionTypes.ADD_PROMOTIONS,
     payload: promotions //promotions is an array, which is the payload
 });
+
+//For Partners
+export const addPartners= partners => ({
+    type: ActionTypes.ADD_PARTNERS,
+    payload: partners
+})
+
+export const partnersFailed= errMess => ({
+    type: ActionTypes.PARTNERS_FAILED,
+    payload: errMess
+});
+
+export const partnersLoading= () => ({  //This means this is our standard action creator that returns an action object and nothing else.
+    type: ActionTypes.PARTNERS_LOADING //This was dispatched from Fetch Campsites.
+});
+
+export const fetchPartners=() => dispatch => { //There are two arrows because we nested an arrow function inside of an arrow function.
+    dispatch(partnersLoading());
+
+    return fetch(baseUrl + "partners") //give Fetch a url (we are using the baseUrl) and campsites as that is the location of the campsites data
+        .then(response => { //response.ok will be set to true
+            if(response.ok){
+                return response;
+            } else {
+                    const error= new Error(`Error ${response.status}: ${response.statusText}`);
+                    error.response= response;
+                    throw error;
+                }
+            },
+            error => {
+                const errMess= new Error(error.message);
+                throw errMess;
+            }
+        )
+        .then(response => response.json()) /*A call to Fetch will return a promise.
+        .json() method to convert the response from json to JavaScript and that Javascript will be the array of partners.*/
+        .then(partners=> dispatch(addPartners(partners)))
+        .catch(error=> dispatch(partnersFailed(error.message)));
+};
+
+export const postFeedback= (feedback) => () => {
+    return fetch(baseUrl + "feedback", {
+        method: "POST",
+        body: JSON.stringify(feedback),
+        headers: {
+            "Content-Type": "application/json"
+        },
+    })
+
+    .then(response => {
+        if (response.ok) {
+            return response;
+        } else {
+            const error = new Error(`Error ${response.status}: ${response.statusText}`);
+            error.response = response;
+            throw error;
+        }
+    },
+    error => { throw error; }
+)
+.then(response => response.json()) //If the POST request method is successful (line116), the json server will send back the data that you sent. It will give a unique id to the data sent back to the user. 
+.then(response => { //Redux store will also be updated 
+    console.log("Reedback: ", response);
+    alert("Thank you for your feedback.\n" + JSON.stringify(response));
+}) 
+.catch(error => { //Error message will be displayed if the POST request method is not successful
+    console.log("post comment", error.message);
+    alert("Your feedback could not be posted\nError: " + error.message);
+});
+}

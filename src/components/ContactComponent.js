@@ -103,9 +103,10 @@ class Contact extends Component {
     } */
 
     handleSubmit(values) {
-        console.log("Current state is: " + JSON.stringify(values));
-        alert("Current state is: " +JSON.stringify(values));
+        //console.log("Current state is: " + JSON.stringify(values));
+        //alert("Current state is: " +JSON.stringify(values));
         this.props.resetFeedbackForm(); //When form is submitted the form values are reset to the initial values.
+        this.props.postFeedback(values); //values object will be received in the postFeedback function in ActionCreators.js as the feedback object.
         //event.preventDefault(); //Normally when you submit a form, it refreshes the entire page. We don't want the page to be refreshed, so we use event.preventDefault(); This was for the controlled form that did not use Redux
     }
 

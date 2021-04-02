@@ -1,13 +1,15 @@
 import React from 'react';
 import { Breadcrumb, BreadcrumbItem, Card, CardBody, CardHeader, Media } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import {Loading} from "./LoadingComponent";
+import {baseUrl} from "../shared/baseUrl";
 
 
 function RenderPartner({partner}) {
     if(partner) { //If statement checks to see if the partner argument contains a truthy value.
         return(
         <React.Fragment>
-            <Media object src={partner.image} alt={partner.name} width="150"/> {/*We use curly braces for src and alt because these items are in an object, not a URL.*/}
+            <Media object src={baseUrl + partner.image} alt={partner.name} width="150px"/> {/*We use curly braces for src and alt because these items are in an object, not a URL.*/}
             <Media body className="ml-5 mb-4">
                 <Media heading>{partner.name}</Media>
                 {partner.description} {/*Displays the description of each partner.*/}
@@ -18,9 +20,7 @@ function RenderPartner({partner}) {
         return <div />; /*Returns an empty div if partner is falsy.*/
     }  
 
-
-function About(props) {
-
+function PartnerList(props) {
     const partners = props.partners.map(partner => { //The partner represents one thing in the PARTNERS array in the partners.js file
         return (
             <Media tag="li" key={partner.id}> {/*tag="li" creates a list item*/}
@@ -28,6 +28,38 @@ function About(props) {
             </Media>
         );
     });
+    //When partners data is loading, display loading symbol
+    if(props.partners.isLoading) {
+        return <Loading/>;
+    }
+
+    //Displays error message if loading doesn't work.
+    if(props.partners.errMess) {
+       return(
+        <div className="col">
+            <h4>{props.partners.errMess}</h4>
+        </div>
+       );
+    }
+
+    return(
+    <div className="col mt-4">
+        <Media list>
+            {partners}
+        </Media>
+    </div>
+    );
+}
+
+function About(props) {
+
+ //   const partners = props.partners.map(partner => { //The partner represents one thing in the PARTNERS array in the partners.js file
+//        return (
+//            <Media tag="li" key={partner.id}> {/*tag="li" creates a list item*/}
+//                <RenderPartner partner={partner}/> {/*Setting a variable that can be used in the RenderPartner method. This partner variable contains the information in the PARTNERS array in the partners.js file*/}
+//            </Media>
+//        );
+//    });
 
     return (
         <div className="container">
@@ -82,9 +114,7 @@ function About(props) {
                     <h3>Community Partners</h3>
                 </div>
                 <div className="col mt-4">
-                    <Media list>
-                        {partners}
-                    </Media>
+                    <PartnerList partners={props.partners}/>
                 </div>
             </div>
         </div>

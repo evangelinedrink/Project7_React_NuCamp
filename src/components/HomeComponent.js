@@ -26,7 +26,10 @@ function Home(props) {
                 </div>
 
                 <div className="col-md m-1">
-                    <RenderCard item={props.partner}/> {/*Provides the variable item to the RenderCard method, where the item will have information about the partner.*/}
+                    <RenderCard item={props.partner} /*Provides the variable item to the RenderCard method, where the item will have information about the partner.*/
+                    isLoading={props.partnersLoading}
+                    errMess={props.partnersErrMess}
+                    /> 
                 </div>
 
             </div>
