@@ -23,9 +23,11 @@ function RenderPartner({partner}) {
 function PartnerList(props) {
     const partners = props.partners.map(partner => { //The partner represents one thing in the PARTNERS array in the partners.js file
         return (
-            <Media tag="li" key={partner.id}> {/*tag="li" creates a list item*/}
+            <Fade in key={partner.id}>
+            <Media tag="li"> {/*tag="li" creates a list item*/}
                 <RenderPartner partner={partner}/> {/*Setting a variable that can be used in the RenderPartner method. This partner variable contains the information in the PARTNERS array in the partners.js file*/}
             </Media>
+            </Fade>
         );
     });
     //When partners data is loading, display loading symbol
@@ -45,7 +47,9 @@ function PartnerList(props) {
     return(
     <div className="col mt-4">
         <Media list>
+            <Stagger in>
             {partners}
+            </Stagger>
         </Media>
     </div>
     );
